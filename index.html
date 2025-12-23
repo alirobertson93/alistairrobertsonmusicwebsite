@@ -7,7 +7,8 @@
     <link rel="stylesheet" href="css/styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsmediatags/3.9.5/jsmediatags.min.js"></script>
 </head>
 <body>
     <!-- Hero Section -->
@@ -18,7 +19,7 @@
                 <span class="title-line">ALISTAIR</span>
                 <span class="title-line">ROBERTSON</span>
             </h1>
-            <p class="hero-subtitle">Composer</p>
+            <p class="hero-subtitle">Composer ◆ Orchestrator ◆ Arranger</p>
             <a href="#listen" class="btn btn-primary">LISTEN</a>
         </div>
         <div class="scroll-indicator">
@@ -32,14 +33,16 @@
             <h2 class="section-title">ABOUT</h2>
             <div class="about-content">
                 <div class="about-image">
-                    <img src="images/placeholder-portrait.jpg" alt="Alistair Robertson">
+                    <img src="images/bio-picture.webp" alt="Alistair Robertson">
                 </div>
                 <div class="about-text">
                     <h3>Alistair Robertson</h3>
                     <p>Based in London, UK, Alistair gained his Undergraduate Degree in Music from the University of Birmingham, before receiving his Masters Degree in Composition for Screen from the Royal College of Music.</p>
                     <p>He has worked as composer and/or orchestrator on a wide variety of projects – from full orchestras, to rock bands, to Musical Theatre pit ensembles – demonstrating clear command of a range of idioms. His style is influenced heavily by his formal classical training, yet is balanced with a rich, modern cinematic sound.</p>
-                    <p>He has worked with award winning composers on major film, television, and video game projects. He has recorded music at Abbey Road, AIR Studios, the Eastwood Scoring Stage (Warner Brothers), and the Synchron Stage in Vienna.</p>
-                    <p>He has had pieces performed by the Hollywood Studio Symphony Orchestra, the Moravian Philharmonic Orchestra, and the Royal College of Music Film Orchestra, among others.</p>
+                    <p>He has worked with award winning composer Ilan Eshkeri (<em>Stardust</em>, <em>Shaun the Sheep</em>, <em>Kick-Ass</em>), having worked on recent projects such as <em>A Perfect Planet</em> (David Attenborough for the BBC), <em>Ghost of Tsushima</em> (video game), <em>Informer</em> (BBC), <em>The White Crow</em> and <em>Riviera</em> (Sky). Alistair recently collaborated with Andy Burrows (Razorlight, <em>After Life</em>) on music for <em>The Platinum Party at the Palace</em> as part of Her Majesty The Queen's Platinum Jubilee celebrations, to a TV audience of 13.3m people.</p>
+                    <p>Alistair wrote two compositions (<em>Sum of All Parts</em> and <em>Gugnunc</em>) for the grand opening of Mathematics: The Winton Gallery at the Science Museum in London, and recently had his piece <em>Elegie for Solo Violoncello</em> premiered by Andrew Shulman (Los Angeles Chamber Orchestra) as part of the LAFCI New Music Project. He is a regular contributor of music for 'Essential Audiobooks', as well as several music production libraries.</p>
+                    <p>He has recorded music at Abbey Road, AIR Studios, the Eastwood Scoring Stage (Warner Brothers), and the Synchron Stage in Vienna. He has had pieces performed by the Hollywood Studio Symphony Orchestra, the Moravian Philharmonic Orchestra, Xenia Pestova, Birmingham Contemporary Music Group, and the Royal College of Music Film Orchestra, and has workshopped with Conrad Pope (<em>Mortal Engines</em>, <em>Isle of Dogs</em>, <em>The Hobbit: The Desolation of Smaug</em>, <em>Harry Potter and the Philosopher's Stone</em>, <em>Star Wars Episodes I–III</em>), William Ross (<em>Ready Player One</em>, <em>Rogue One</em>, <em>The Hunger Games</em>), Alastair King (<em>Aquaman</em>, <em>Wonder Woman</em>, <em>Downton Abbey</em>, <em>Harry Potter and the Half Blood Prince</em>), and Joe Kraemer (<em>Mission: Impossible – Rogue Nation</em>, <em>Jack Reacher</em>).</p>
+                    <p class="credits-link-wrapper"><a href="#" class="credits-link" id="aboutCreditsLink">For a full list of credits click here</a></p>
                 </div>
             </div>
         </div>
@@ -52,36 +55,251 @@
             <div class="music-player">
                 <div class="player-container">
                     <div class="track-list">
-                        <div class="track active" data-track="1">
+                        <div class="track active" data-track="0" data-src="audio/01 Breath [Extract].mp3">
                             <span class="track-number">01</span>
-                            <span class="track-title">Placeholder Track One</span>
-                            <span class="track-duration">3:42</span>
+                            <div class="track-info">
+                                <span class="track-title">Loading...</span>
+                                <span class="track-album"></span>
+                            </div>
+                            <span class="track-duration">--:--</span>
                         </div>
-                        <div class="track" data-track="2">
+                        <div class="track" data-track="1" data-src="audio/02 Blackout - Main Theme & Chapter.mp3">
                             <span class="track-number">02</span>
-                            <span class="track-title">Placeholder Track Two</span>
-                            <span class="track-duration">4:15</span>
+                            <div class="track-info">
+                                <span class="track-title">Loading...</span>
+                                <span class="track-album"></span>
+                            </div>
+                            <span class="track-duration">--:--</span>
                         </div>
-                        <div class="track" data-track="3">
+                        <div class="track" data-track="2" data-src="audio/03 Romance [Extracts Edits].mp3">
                             <span class="track-number">03</span>
-                            <span class="track-title">Placeholder Track Three</span>
-                            <span class="track-duration">5:01</span>
+                            <div class="track-info">
+                                <span class="track-title">Loading...</span>
+                                <span class="track-album"></span>
+                            </div>
+                            <span class="track-duration">--:--</span>
                         </div>
-                        <div class="track" data-track="4">
+                        <div class="track" data-track="3" data-src="audio/04 Awakening [Extract].mp3">
                             <span class="track-number">04</span>
-                            <span class="track-title">Placeholder Track Four</span>
-                            <span class="track-duration">3:28</span>
+                            <div class="track-info">
+                                <span class="track-title">Loading...</span>
+                                <span class="track-album"></span>
+                            </div>
+                            <span class="track-duration">--:--</span>
                         </div>
-                        <div class="track" data-track="5">
+                        <div class="track" data-track="4" data-src="audio/05 Through The Bookcase.wav">
                             <span class="track-number">05</span>
-                            <span class="track-title">Placeholder Track Five</span>
-                            <span class="track-duration">4:52</span>
+                            <div class="track-info">
+                                <span class="track-title">Loading...</span>
+                                <span class="track-album"></span>
+                            </div>
+                            <span class="track-duration">--:--</span>
+                        </div>
+                        <div class="track" data-track="5" data-src="audio/06 Waves.mp3">
+                            <span class="track-number">06</span>
+                            <div class="track-info">
+                                <span class="track-title">Loading...</span>
+                                <span class="track-album"></span>
+                            </div>
+                            <span class="track-duration">--:--</span>
+                        </div>
+                        <div class="track" data-track="6" data-src="audio/07 Magical Chase.mp3">
+                            <span class="track-number">07</span>
+                            <div class="track-info">
+                                <span class="track-title">Loading...</span>
+                                <span class="track-album"></span>
+                            </div>
+                            <span class="track-duration">--:--</span>
+                        </div>
+                        <div class="track" data-track="7" data-src="audio/08 Fairytale Fantasy [Extract].mp3">
+                            <span class="track-number">08</span>
+                            <div class="track-info">
+                                <span class="track-title">Loading...</span>
+                                <span class="track-album"></span>
+                            </div>
+                            <span class="track-duration">--:--</span>
+                        </div>
+                        <div class="track" data-track="8" data-src="audio/09 Sum of All Parts.mp3">
+                            <span class="track-number">09</span>
+                            <div class="track-info">
+                                <span class="track-title">Loading...</span>
+                                <span class="track-album"></span>
+                            </div>
+                            <span class="track-duration">--:--</span>
+                        </div>
+                        <div class="track" data-track="9" data-src="audio/10 Dangerous Skies - Main Theme.mp3">
+                            <span class="track-number">10</span>
+                            <div class="track-info">
+                                <span class="track-title">Loading...</span>
+                                <span class="track-album"></span>
+                            </div>
+                            <span class="track-duration">--:--</span>
+                        </div>
+                        <div class="track" data-track="10" data-src="audio/11 Reaching The Lair [Extracts Edit].wav">
+                            <span class="track-number">11</span>
+                            <div class="track-info">
+                                <span class="track-title">Loading...</span>
+                                <span class="track-album"></span>
+                            </div>
+                            <span class="track-duration">--:--</span>
+                        </div>
+                        <div class="track" data-track="11" data-src="audio/12 Ed.mp3">
+                            <span class="track-number">12</span>
+                            <div class="track-info">
+                                <span class="track-title">Loading...</span>
+                                <span class="track-album"></span>
+                            </div>
+                            <span class="track-duration">--:--</span>
+                        </div>
+                        <div class="track" data-track="12" data-src="audio/13 Paul's Early Life (Orchestra Version).mp3">
+                            <span class="track-number">13</span>
+                            <div class="track-info">
+                                <span class="track-title">Loading...</span>
+                                <span class="track-album"></span>
+                            </div>
+                            <span class="track-duration">--:--</span>
+                        </div>
+                        <div class="track" data-track="13" data-src="audio/14 The End of Our Time [Extract].mp3">
+                            <span class="track-number">14</span>
+                            <div class="track-info">
+                                <span class="track-title">Loading...</span>
+                                <span class="track-album"></span>
+                            </div>
+                            <span class="track-duration">--:--</span>
+                        </div>
+                        <div class="track" data-track="14" data-src="audio/15 Half Life - Main Theme.mp3">
+                            <span class="track-number">15</span>
+                            <div class="track-info">
+                                <span class="track-title">Loading...</span>
+                                <span class="track-album"></span>
+                            </div>
+                            <span class="track-duration">--:--</span>
+                        </div>
+                        <div class="track" data-track="15" data-src="audio/16 Emergence [Extract].mp3">
+                            <span class="track-number">16</span>
+                            <div class="track-info">
+                                <span class="track-title">Loading...</span>
+                                <span class="track-album"></span>
+                            </div>
+                            <span class="track-duration">--:--</span>
+                        </div>
+                        <div class="track" data-track="16" data-src="audio/17 Stories From Herodotus - Main Theme.mp3">
+                            <span class="track-number">17</span>
+                            <div class="track-info">
+                                <span class="track-title">Loading...</span>
+                                <span class="track-album"></span>
+                            </div>
+                            <span class="track-duration">--:--</span>
+                        </div>
+                        <div class="track" data-track="17" data-src="audio/18 Étude for Harp [Extract].mp3">
+                            <span class="track-number">18</span>
+                            <div class="track-info">
+                                <span class="track-title">Loading...</span>
+                                <span class="track-album"></span>
+                            </div>
+                            <span class="track-duration">--:--</span>
+                        </div>
+                        <div class="track" data-track="18" data-src="audio/19 'Elegie' for Solo Cello.mp3">
+                            <span class="track-number">19</span>
+                            <div class="track-info">
+                                <span class="track-title">Loading...</span>
+                                <span class="track-album"></span>
+                            </div>
+                            <span class="track-duration">--:--</span>
+                        </div>
+                        <div class="track" data-track="19" data-src="audio/20 More [Extract].mp3">
+                            <span class="track-number">20</span>
+                            <div class="track-info">
+                                <span class="track-title">Loading...</span>
+                                <span class="track-album"></span>
+                            </div>
+                            <span class="track-duration">--:--</span>
+                        </div>
+                        <div class="track" data-track="20" data-src="audio/21 The Lost World - Main Theme.mp3">
+                            <span class="track-number">21</span>
+                            <div class="track-info">
+                                <span class="track-title">Loading...</span>
+                                <span class="track-album"></span>
+                            </div>
+                            <span class="track-duration">--:--</span>
+                        </div>
+                        <div class="track" data-track="21" data-src="audio/22 Billy Budd - Main Theme.mp3">
+                            <span class="track-number">22</span>
+                            <div class="track-info">
+                                <span class="track-title">Loading...</span>
+                                <span class="track-album"></span>
+                            </div>
+                            <span class="track-duration">--:--</span>
+                        </div>
+                        <div class="track" data-track="22" data-src="audio/23 Half Life Surface Tension - Main Theme.mp3">
+                            <span class="track-number">23</span>
+                            <div class="track-info">
+                                <span class="track-title">Loading...</span>
+                                <span class="track-album"></span>
+                            </div>
+                            <span class="track-duration">--:--</span>
+                        </div>
+                        <div class="track" data-track="23" data-src="audio/24 Brushtrokes in Time - Main Theme.mp3">
+                            <span class="track-number">24</span>
+                            <div class="track-info">
+                                <span class="track-title">Loading...</span>
+                                <span class="track-album"></span>
+                            </div>
+                            <span class="track-duration">--:--</span>
+                        </div>
+                        <div class="track" data-track="24" data-src="audio/25 Anne of Green Gables - Main Theme.mp3">
+                            <span class="track-number">25</span>
+                            <div class="track-info">
+                                <span class="track-title">Loading...</span>
+                                <span class="track-album"></span>
+                            </div>
+                            <span class="track-duration">--:--</span>
+                        </div>
+                        <div class="track" data-track="25" data-src="audio/26 Northanger Abbey - Main Theme.mp3">
+                            <span class="track-number">26</span>
+                            <div class="track-info">
+                                <span class="track-title">Loading...</span>
+                                <span class="track-album"></span>
+                            </div>
+                            <span class="track-duration">--:--</span>
+                        </div>
+                        <div class="track" data-track="26" data-src="audio/27 Little Women - Main Theme.mp3">
+                            <span class="track-number">27</span>
+                            <div class="track-info">
+                                <span class="track-title">Loading...</span>
+                                <span class="track-album"></span>
+                            </div>
+                            <span class="track-duration">--:--</span>
+                        </div>
+                        <div class="track" data-track="27" data-src="audio/28 Jane Austen's Theme.mp3">
+                            <span class="track-number">28</span>
+                            <div class="track-info">
+                                <span class="track-title">Loading...</span>
+                                <span class="track-album"></span>
+                            </div>
+                            <span class="track-duration">--:--</span>
+                        </div>
+                        <div class="track" data-track="28" data-src="audio/29 Duet for Violin & Piano [Extracts Edits].mp3">
+                            <span class="track-number">29</span>
+                            <div class="track-info">
+                                <span class="track-title">Loading...</span>
+                                <span class="track-album"></span>
+                            </div>
+                            <span class="track-duration">--:--</span>
                         </div>
                     </div>
+                    <button class="track-list-toggle" id="trackListToggle">
+                        <span class="toggle-text">Show More</span>
+                        <svg class="toggle-arrow" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+                    </button>
                     <div class="player-controls">
                         <div class="now-playing">
                             <span class="now-playing-label">Now Playing</span>
-                            <span class="now-playing-title">Placeholder Track One</span>
+                            <img class="now-playing-artwork" id="nowPlayingArtwork" src="" alt="Album artwork">
+                            <div class="now-playing-info">
+                                <span class="now-playing-title"></span>
+                                <span class="now-playing-album"></span>
+                            </div>
                         </div>
                         <div class="progress-container">
                             <div class="progress-bar">
@@ -89,7 +307,7 @@
                             </div>
                             <div class="time-display">
                                 <span class="current-time">0:00</span>
-                                <span class="total-time">3:42</span>
+                                <span class="total-time">--:--</span>
                             </div>
                         </div>
                         <div class="control-buttons">
@@ -98,7 +316,7 @@
                             </button>
                             <button class="control-btn play-btn" id="playBtn">
                                 <svg class="play-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-                                <svg class="pause-icon hidden" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+                                <svg class="pause-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
                             </button>
                             <button class="control-btn" id="nextBtn">
                                 <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
@@ -114,25 +332,126 @@
     <section id="watch" class="watch">
         <div class="container">
             <h2 class="section-title">WATCH</h2>
-            <div class="video-grid">
-                <div class="video-item">
-                    <div class="video-wrapper">
-                        <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="Placeholder Video 1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            <div class="video-carousel">
+                <button class="carousel-btn carousel-prev" aria-label="Previous video">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+                </button>
+                <div class="carousel-track-container">
+                    <div class="carousel-track">
+                        <div class="video-item" data-index="0">
+                            <div class="video-thumbnail-container">
+                                <div class="video-wrapper">
+                                    <div class="video-placeholder" data-src="https://www.youtube.com/embed/h4I_pROuI4s?enablejsapi=1">
+                                        <img src="https://img.youtube.com/vi/h4I_pROuI4s/maxresdefault.jpg" alt="Sing When We're Winning" loading="lazy">
+                                        <button class="play-overlay" aria-label="Play video">
+                                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="video-text-container">
+                                <h4 class="video-title">Sing When We're Winning</h4>
+                                <p class="video-description">From The BBC's Platinum Party in the Palace, for Her Majesty Queen Elizabeth's Platinum Jubilee. Music by Andy Burrows, orchestration by Alistair Robertson.</p>
+                            </div>
+                        </div>
+                        <div class="video-item" data-index="1">
+                            <div class="video-thumbnail-container">
+                                <div class="video-wrapper">
+                                    <div class="video-placeholder" data-src="https://www.youtube.com/embed/OmfKXzJvQrM?enablejsapi=1">
+                                        <img src="https://img.youtube.com/vi/OmfKXzJvQrM/maxresdefault.jpg" alt="Announcing Mathematics: The Winton Gallery" loading="lazy">
+                                        <button class="play-overlay" aria-label="Play video">
+                                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="video-text-container">
+                                <h4 class="video-title">Announcing Mathematics: The Winton Gallery Designed by Zaha Hadid Architects</h4>
+                            </div>
+                        </div>
+                        <div class="video-item" data-index="2">
+                            <div class="video-thumbnail-container">
+                                <div class="video-wrapper">
+                                    <div class="video-placeholder" data-src="https://www.youtube.com/embed/BQCcOI1l6ms?enablejsapi=1">
+                                        <img src="https://img.youtube.com/vi/BQCcOI1l6ms/maxresdefault.jpg" alt="Breath" loading="lazy">
+                                        <button class="play-overlay" aria-label="Play video">
+                                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="video-text-container">
+                                <h4 class="video-title">Breath</h4>
+                                <p class="video-description">The Mercadantes short film 'Breath', rescored by Alistair Robertson.</p>
+                            </div>
+                        </div>
+                        <div class="video-item" data-index="3">
+                            <div class="video-thumbnail-container">
+                                <div class="video-wrapper">
+                                    <div class="video-placeholder" data-src="https://www.youtube.com/embed/SyzMUr6-Em0?enablejsapi=1">
+                                        <img src="https://img.youtube.com/vi/SyzMUr6-Em0/maxresdefault.jpg" alt="Ed" loading="lazy">
+                                        <button class="play-overlay" aria-label="Play video">
+                                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="video-text-container">
+                                <h4 class="video-title">Ed</h4>
+                                <p class="video-description">Taha Neyestani's short film 'Ed', rescored by Alistair Robertson.</p>
+                            </div>
+                        </div>
+                        <div class="video-item" data-index="4">
+                            <div class="video-thumbnail-container">
+                                <div class="video-wrapper">
+                                    <div class="video-placeholder" data-src="https://www.youtube.com/embed/QGzQtH6U-10?enablejsapi=1">
+                                        <img src="https://img.youtube.com/vi/QGzQtH6U-10/maxresdefault.jpg" alt="Salience" loading="lazy">
+                                        <button class="play-overlay" aria-label="Play video">
+                                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="video-text-container">
+                                <h4 class="video-title">Salience</h4>
+                                <p class="video-description">Paul Trillo's short film 'Salience', rescored by Alistair Robertson.</p>
+                            </div>
+                        </div>
+                        <div class="video-item" data-index="5">
+                            <div class="video-thumbnail-container">
+                                <div class="video-wrapper">
+                                    <div class="video-placeholder" data-src="https://www.youtube.com/embed/Z_S7r5tfUhY?enablejsapi=1">
+                                        <img src="https://img.youtube.com/vi/Z_S7r5tfUhY/maxresdefault.jpg" alt="A Fairytale Fantasy" loading="lazy">
+                                        <button class="play-overlay" aria-label="Play video">
+                                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="video-text-container">
+                                <h4 class="video-title">A Fairytale Fantasy</h4>
+                            </div>
+                        </div>
                     </div>
-                    <h4 class="video-title">Placeholder Video Title</h4>
                 </div>
-                <div class="video-item">
-                    <div class="video-wrapper">
-                        <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="Placeholder Video 2" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                    </div>
-                    <h4 class="video-title">Placeholder Video Title</h4>
+                <button class="carousel-btn carousel-next" aria-label="Next video">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8.59 16.59L10 18l6-6-6-6-1.41 1.41L13.17 12z"/></svg>
+                </button>
+            </div>
+            <div class="carousel-dots"></div>
+        </div>
+        
+        <!-- Expanded video overlay -->
+        <div class="video-expanded-overlay" id="videoExpandedOverlay">
+            <button class="video-close-btn" aria-label="Close video">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+            </button>
+            <div class="video-expanded-container">
+                <div class="video-expanded-wrapper">
+                    <iframe id="expandedVideoIframe" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                 </div>
-                <div class="video-item">
-                    <div class="video-wrapper">
-                        <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="Placeholder Video 3" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                    </div>
-                    <h4 class="video-title">Placeholder Video Title</h4>
-                </div>
+                <h4 class="video-expanded-title"></h4>
+                <p class="video-expanded-description"></p>
             </div>
         </div>
     </section>
@@ -256,6 +575,39 @@
         <button class="credits-btn" id="creditsBtn">Credits</button>
     </footer>
 
+    <!-- Mini Player -->
+    <div class="miniplayer" id="miniplayer">
+        <div class="miniplayer-progress">
+            <div class="miniplayer-progress-fill"></div>
+        </div>
+        <div class="miniplayer-content">
+            <img class="miniplayer-artwork" id="miniplayerArtwork" src="" alt="Album artwork">
+            <div class="miniplayer-info">
+                <div class="miniplayer-text-wrapper">
+                    <span class="miniplayer-title"></span>
+                    <span class="miniplayer-album"></span>
+                </div>
+            </div>
+            <div class="miniplayer-time">
+                <span class="miniplayer-current">0:00</span>
+                <span class="miniplayer-separator">/</span>
+                <span class="miniplayer-total">--:--</span>
+            </div>
+            <div class="miniplayer-controls">
+                <button class="miniplayer-btn" id="miniPrevBtn">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg>
+                </button>
+                <button class="miniplayer-btn miniplayer-play-btn" id="miniPlayBtn">
+                    <svg class="play-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                    <svg class="pause-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+                </button>
+                <button class="miniplayer-btn" id="miniNextBtn">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Sticky Navigation -->
     <nav class="sticky-nav">
         <div class="nav-container">
@@ -285,31 +637,63 @@
     <div class="modal-overlay" id="creditsModal">
         <div class="modal">
             <button class="modal-close" id="modalClose">&times;</button>
-            <h2>Credits</h2>
+            <h2>PROJECTS</h2>
             <div class="credits-content">
                 <div class="credit-section">
-                    <h3>Website Design & Development</h3>
-                    <p>Alistair Robertson</p>
-                </div>
-                <div class="credit-section">
-                    <h3>Photography</h3>
-                    <p>Placeholder Photographer</p>
-                </div>
-                <div class="credit-section">
-                    <h3>Special Thanks</h3>
-                    <p>Placeholder acknowledgements and thanks to collaborators, mentors, and supporters.</p>
-                </div>
-                <div class="credit-section">
-                    <h3>Music</h3>
-                    <p>All compositions © Alistair Robertson</p>
-                </div>
-                <div class="credit-section">
-                    <h3>Recording Studios</h3>
+                    <h3>TV/Film</h3>
                     <ul>
-                        <li>Abbey Road Studios</li>
-                        <li>AIR Studios</li>
-                        <li>Eastwood Scoring Stage, Warner Brothers</li>
-                        <li>Synchron Stage Vienna</li>
+                        <li><em>Desperate Journey</em> (Film, Orchestrator, 2025)</li>
+                        <li><em>House of Guinness</em> (TV (Netflix), Arrangements, 2023)</li>
+                        <li><em>Long Day's Journey Into Night</em> (Film, Orchestrator, 2025)</li>
+                        <li><em>Super/Man: The Christopher Reeve Story</em> (Film, Orchestrator, 2024)</li>
+                        <li><em>Annika</em> (TV, Orchestrator, 2024)</li>
+                        <li><em>The Unlikely Pilgrimage of Harold Fry</em> (Film, Orchestrator, 2023)</li>
+                        <li><em>Platinum Party at the Palace</em> (TV, BBC Live broadcast from Buckingham Palace for Her Majesty the Queen's Platinum Jubilee, Orchestrator, 2022)</li>
+                        <li><em>Murder, They Hope</em> (TV, Composer, 2022)</li>
+                        <li><em>Exploring Creativity and Schizophrenia</em> (Short, Composer, 2021)</li>
+                        <li><em>A Perfect Planet</em> (David Attenborough documentary for the BBC, Music Production Assistant, 2020)</li>
+                        <li><em>The Glorias</em> (Film, Remote Recording Engineer, 2020)</li>
+                        <li><em>The Athena</em> (TV, Sky, Music Production Assistant, 2019)</li>
+                        <li><em>Riviera</em> (TV, Sky (18 episodes), Music Production Assistant, 2018-2019)</li>
+                        <li><em>Farming</em> (Film, Music Production Assistant, 2018)</li>
+                        <li><em>Informer</em> (TV, BBC (6 episodes), Music Production Assistant, 2018)</li>
+                        <li><em>The White Crow</em> (Film, Music Production Assistant, 2018)</li>
+                    </ul>
+                </div>
+                <div class="credit-section">
+                    <h3>Video Games</h3>
+                    <ul>
+                        <li><em>Ghost of Tsushima</em> (Suckerpunch Productions/Sony, Music Production Assistant, 2019)</li>
+                        <li><em>The Sims 4</em> (Multiple Expansions, Music Production Assistant & Arrangements, 2018 - present)</li>
+                    </ul>
+                </div>
+                <div class="credit-section">
+                    <h3>Other Audio/Visual Media</h3>
+                    <ul>
+                        <li><em>1984</em> (Audiobook, Score Recording Assistant, 2024)</li>
+                        <li><em>Announcing Mathematics: The Winton Gallery Designed by Zaha Hadid Architects</em> (composer/orchestrator - two original compositions for the grand opening of 'Mathematics: The Winton Gallery' at the Science Museum, London, Dec 2016)</li>
+                        <li><em>Essential Audiobooks</em> (composer/orchestrator/mockups, 2015 - present). Projects include <em>Pride & Prejudice</em>, <em>Persuasion</em> (Jane Austen), <em>The Wonderful Wizard of Oz</em> (L. Frank Baum), <em>The Hound of the Baskervilles</em>, <em>The Lost World</em> (Arthur Conan Doyle), <em>Anne of Green Gables</em> (L. M. Montgomery) and the <em>Little Women</em> series (Louisa May Alcott).</li>
+                    </ul>
+                </div>
+                <div class="credit-section">
+                    <h3>Theatre/Live</h3>
+                    <ul>
+                        <li><em>The Snowman and the Snowdog: Live</em> (Arrangements, Theatre Royal Drury Lane, Birmingham Town Hall)</li>
+                        <li><em>The Cereal Café</em> (Orchestrator/Arranger, The Other Palace, 2019)</li>
+                        <li><em>Jerry Springer: The Opera</em> (Musical Assistant, The Lost Theatre, 2016)</li>
+                        <li><em>The Fix</em> (Musical Assistant, The Union Theatre, 2016)</li>
+                        <li><em>Duncton Wood</em> (Cello, new musical, Union Theatre, 2015)</li>
+                        <li><em>Three Guys Naked from the Waist Down</em> (Musical Assistant, Finborough Theatre, 2015)</li>
+                        <li><em>GMTG and Watch This Present: Sunshine Guy</em> (New Musical - Drum Arrangements)</li>
+                        <li><em>GMTG Presents: The Comedian</em> (New Musical - Orchestrator/Arranger)</li>
+                        <li><em>GMTG Presents: Chess</em> (Keys programmer)</li>
+                    </ul>
+                </div>
+                <div class="credit-section">
+                    <h3>Education</h3>
+                    <ul>
+                        <li>MComp - Composition for Screen, Royal College of Music (Sep 2014 - Jul 2016)</li>
+                        <li>BMus - Music, The University of Birmingham (Sep 2011 - Jul 2014)</li>
                     </ul>
                 </div>
             </div>

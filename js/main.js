@@ -13,17 +13,35 @@
         navLinks: document.querySelectorAll('.nav-link'),
         sections: document.querySelectorAll('section[id]'),
         creditsBtn: document.getElementById('creditsBtn'),
+        aboutCreditsLink: document.getElementById('aboutCreditsLink'),
         creditsModal: document.getElementById('creditsModal'),
         modalClose: document.getElementById('modalClose'),
         playBtn: document.getElementById('playBtn'),
         prevBtn: document.getElementById('prevBtn'),
         nextBtn: document.getElementById('nextBtn'),
         tracks: document.querySelectorAll('.track'),
+        trackList: document.querySelector('.track-list'),
+        trackListToggle: document.getElementById('trackListToggle'),
         progressBar: document.querySelector('.progress-bar'),
         progress: document.querySelector('.progress'),
         currentTimeEl: document.querySelector('.current-time'),
         totalTimeEl: document.querySelector('.total-time'),
-        nowPlayingTitle: document.querySelector('.now-playing-title')
+        nowPlayingTitle: document.querySelector('.now-playing-title'),
+        nowPlayingAlbum: document.querySelector('.now-playing-album'),
+        nowPlayingArtwork: document.getElementById('nowPlayingArtwork'),
+        // Miniplayer elements
+        miniplayer: document.getElementById('miniplayer'),
+        miniplayerArtwork: document.getElementById('miniplayerArtwork'),
+        miniPlayBtn: document.getElementById('miniPlayBtn'),
+        miniPrevBtn: document.getElementById('miniPrevBtn'),
+        miniNextBtn: document.getElementById('miniNextBtn'),
+        miniTitle: document.querySelector('.miniplayer-title'),
+        miniAlbum: document.querySelector('.miniplayer-album'),
+        miniCurrent: document.querySelector('.miniplayer-current'),
+        miniTotal: document.querySelector('.miniplayer-total'),
+        miniProgressFill: document.querySelector('.miniplayer-progress-fill'),
+        miniTextWrapper: document.querySelector('.miniplayer-text-wrapper'),
+        playerControls: document.querySelector('.player-controls')
     };
 
     // =====================================================
@@ -32,8 +50,9 @@
     const state = {
         currentTrack: 0,
         isPlaying: false,
-        progress: 0,
-        audio: null
+        audio: null,
+        audioCache: new Map(), // Cache for preloaded audio elements
+        hasInteracted: false   // Track if user has interacted with player
     };
 
     // =====================================================
@@ -98,10 +117,24 @@
     // Credits Modal
     // =====================================================
     function initCreditsModal() {
-        if (!elements.creditsBtn || !elements.creditsModal) return;
+        if (!elements.creditsModal) return;
 
-        elements.creditsBtn.addEventListener('click', openModal);
-        elements.modalClose.addEventListener('click', closeModal);
+        // Footer credits button
+        if (elements.creditsBtn) {
+            elements.creditsBtn.addEventListener('click', openModal);
+        }
+        
+        // About section credits link
+        if (elements.aboutCreditsLink) {
+            elements.aboutCreditsLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                openModal();
+            });
+        }
+
+        if (elements.modalClose) {
+            elements.modalClose.addEventListener('click', closeModal);
+        }
         
         elements.creditsModal.addEventListener('click', (e) => {
             if (e.target === elements.creditsModal) {
@@ -127,7 +160,7 @@
     }
 
     // =====================================================
-    // Music Player (UI Only - Placeholder)
+    // Music Player (Lazy Loading with Smart Preloading)
     // =====================================================
     function initMusicPlayer() {
         if (!elements.playBtn) return;
@@ -155,6 +188,11 @@
             elements.progressBar.addEventListener('click', seekTrack);
         }
 
+        // Track list expand/collapse toggle
+        if (elements.trackListToggle && elements.trackList) {
+            elements.trackListToggle.addEventListener('click', toggleTrackList);
+        }
+
         // Keyboard controls
         document.addEventListener('keydown', (e) => {
             if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
@@ -174,47 +212,329 @@
         });
     }
 
-    function togglePlay() {
-        state.isPlaying = !state.isPlaying;
-        updatePlayButton();
+    // Toggle track list expand/collapse
+    function toggleTrackList() {
+        const isExpanded = elements.trackList.classList.toggle('expanded');
+        elements.trackListToggle.classList.toggle('expanded', isExpanded);
         
+        const toggleText = elements.trackListToggle.querySelector('.toggle-text');
+        if (toggleText) {
+            toggleText.textContent = isExpanded ? 'Show Less' : 'Show More';
+        }
+    }
+
+    // Extract clean title from filename (fallback if no metadata)
+    function getTitleFromFilename(src) {
+        const filename = src.split('/').pop();
+        return filename
+            .replace(/^\d+\s*/, '')           // Remove leading track number
+            .replace(/\.(mp3|wav)$/i, '');    // Remove extension
+    }
+
+    // Load ID3/metadata tags for all tracks
+    function loadAllTrackTags() {
+        // First, immediately set all titles from filenames (so nothing says "Loading...")
+        elements.tracks.forEach((track, index) => {
+            const src = track.dataset.src;
+            if (!src) return;
+            const titleEl = track.querySelector('.track-title');
+            if (titleEl && (titleEl.textContent === 'Loading...' || titleEl.textContent === '')) {
+                titleEl.textContent = getTitleFromFilename(src);
+            }
+            // Also update now playing if this is the first track
+            if (index === 0 && elements.nowPlayingTitle) {
+                elements.nowPlayingTitle.textContent = getTitleFromFilename(src);
+            }
+        });
+
+        // Then try to load actual metadata (will update if successful)
+        if (typeof jsmediatags === 'undefined') {
+            console.warn('jsmediatags not loaded, using filenames');
+            return;
+        }
+
+        console.log('jsmediatags loaded, reading tags...');
+
+        elements.tracks.forEach((track, index) => {
+            const src = track.dataset.src;
+            if (!src) return;
+
+            // Use fetch to get the file as a blob for better CORS handling
+            fetch(src)
+                .then(response => response.blob())
+                .then(blob => {
+                    jsmediatags.read(blob, {
+                        onSuccess: function(tag) {
+                            const tags = tag.tags;
+                            console.log('Tags for track', index, ':', tags.title, '-', tags.album);
+                            
+                            const titleEl = track.querySelector('.track-title');
+                            const albumEl = track.querySelector('.track-album');
+
+                            // Set title from metadata or keep filename
+                            if (titleEl && tags.title) {
+                                titleEl.textContent = tags.title;
+                            }
+
+                            // Set album if available
+                            if (albumEl && tags.album) {
+                                albumEl.textContent = tags.album;
+                            }
+
+                            // Extract album artwork if available
+                            let artworkDataUrl = null;
+                            if (tags.picture) {
+                                const picture = tags.picture;
+                                const base64String = btoa(
+                                    picture.data.reduce((data, byte) => data + String.fromCharCode(byte), '')
+                                );
+                                artworkDataUrl = `data:${picture.format};base64,${base64String}`;
+                                // Store artwork on the track element for later retrieval
+                                track.dataset.artwork = artworkDataUrl;
+                            }
+
+                            // Update now playing if this is the current track
+                            if (index === state.currentTrack) {
+                                if (elements.nowPlayingTitle && tags.title) {
+                                    elements.nowPlayingTitle.textContent = tags.title;
+                                }
+                                if (elements.nowPlayingAlbum && tags.album) {
+                                    elements.nowPlayingAlbum.textContent = tags.album;
+                                }
+                                // Update artwork
+                                updateArtwork(artworkDataUrl);
+                            }
+                        },
+                        onError: function(error) {
+                            console.log('Error reading tags for:', src, error.type, error.info);
+                        }
+                    });
+                })
+                .catch(err => {
+                    console.log('Fetch error for:', src, err);
+                });
+        });
+    }
+
+    // Preload metadata for all tracks to show durations immediately
+    function preloadAllTrackMetadata() {
+        elements.tracks.forEach((track, index) => {
+            const src = track.dataset.src;
+            if (!src) return;
+
+            // Create a temporary audio element just for metadata
+            const audio = new Audio();
+            audio.preload = 'metadata';
+            
+            audio.addEventListener('loadedmetadata', () => {
+                const duration = formatTime(Math.floor(audio.duration));
+                const durationEl = track.querySelector('.track-duration');
+                if (durationEl) {
+                    durationEl.textContent = duration;
+                }
+                // Update total time if this is the current track
+                if (index === state.currentTrack && elements.totalTimeEl) {
+                    elements.totalTimeEl.textContent = duration;
+                }
+                // Cache this audio element for later use
+                if (!state.audioCache.has(index)) {
+                    // Add event listeners for when this becomes the active track
+                    audio.addEventListener('ended', () => {
+                        playNext();
+                    });
+                    audio.addEventListener('timeupdate', () => {
+                        if (index === state.currentTrack) {
+                            updateProgressUI();
+                        }
+                    });
+                    state.audioCache.set(index, audio);
+                }
+            });
+
+            audio.addEventListener('error', (e) => {
+                console.log('Error loading metadata for track', index, src, e);
+            });
+
+            // Set src AFTER adding listeners, then trigger load
+            audio.src = src;
+            audio.load(); // Explicitly trigger loading
+        });
+    }
+
+    // Get or create audio element for a track (lazy loading)
+    function getAudio(index) {
+        const track = elements.tracks[index];
+        if (!track) return null;
+        
+        const src = track.dataset.src;
+        if (!src) return null;
+
+        // Return cached audio if available
+        if (state.audioCache.has(index)) {
+            return state.audioCache.get(index);
+        }
+
+        // Create new audio element (lazy load)
+        const audio = new Audio();
+        audio.preload = 'metadata'; // Only load metadata initially
+        audio.src = src;
+        
+        // Update duration when metadata loads
+        audio.addEventListener('loadedmetadata', () => {
+            const duration = formatTime(Math.floor(audio.duration));
+            const durationEl = track.querySelector('.track-duration');
+            if (durationEl) {
+                durationEl.textContent = duration;
+            }
+            // Update total time if this is the current track
+            if (index === state.currentTrack && elements.totalTimeEl) {
+                elements.totalTimeEl.textContent = duration;
+            }
+        });
+
+        // Handle track ending
+        audio.addEventListener('ended', () => {
+            playNext();
+        });
+
+        // Update progress during playback
+        audio.addEventListener('timeupdate', () => {
+            if (index === state.currentTrack) {
+                updateProgressUI();
+            }
+        });
+
+        // Cache the audio element
+        state.audioCache.set(index, audio);
+        
+        return audio;
+    }
+
+    // Preload adjacent tracks after user starts playing
+    function preloadAdjacentTracks(currentIndex) {
+        // Preload next track
+        const nextIndex = currentIndex < elements.tracks.length - 1 ? currentIndex + 1 : 0;
+        const nextAudio = getAudio(nextIndex);
+        if (nextAudio && nextAudio.preload === 'metadata') {
+            nextAudio.preload = 'auto';
+        }
+
+        // Preload previous track
+        const prevIndex = currentIndex > 0 ? currentIndex - 1 : elements.tracks.length - 1;
+        const prevAudio = getAudio(prevIndex);
+        if (prevAudio && prevAudio.preload === 'metadata') {
+            prevAudio.preload = 'auto';
+        }
+    }
+
+    function togglePlay() {
+        if (!state.audio) {
+            // First play - load the current track
+            state.audio = getAudio(state.currentTrack);
+            if (!state.audio) return;
+        }
+
         if (state.isPlaying) {
-            simulateProgress();
+            state.audio.pause();
+            state.isPlaying = false;
+            updatePlayButton();
+            updateMiniplayerVisibility();
+        } else {
+            state.audio.play().then(() => {
+                state.isPlaying = true;
+                state.hasInteracted = true;
+                updatePlayButton();
+                updateMiniplayerVisibility();
+                // Start preloading adjacent tracks after first interaction
+                setTimeout(() => preloadAdjacentTracks(state.currentTrack), 2000);
+            }).catch(err => {
+                console.log('Playback failed:', err);
+            });
+        }
+    }
+
+    function updateArtwork(artworkDataUrl) {
+        // Update main player artwork
+        if (elements.nowPlayingArtwork) {
+            if (artworkDataUrl) {
+                elements.nowPlayingArtwork.src = artworkDataUrl;
+                elements.nowPlayingArtwork.classList.add('visible');
+            } else {
+                elements.nowPlayingArtwork.src = '';
+                elements.nowPlayingArtwork.classList.remove('visible');
+            }
+        }
+        
+        // Update miniplayer artwork
+        if (elements.miniplayerArtwork) {
+            if (artworkDataUrl) {
+                elements.miniplayerArtwork.src = artworkDataUrl;
+                elements.miniplayerArtwork.classList.add('visible');
+            } else {
+                elements.miniplayerArtwork.src = '';
+                elements.miniplayerArtwork.classList.remove('visible');
+            }
         }
     }
 
     function updatePlayButton() {
-        const playIcon = elements.playBtn.querySelector('.play-icon');
-        const pauseIcon = elements.playBtn.querySelector('.pause-icon');
-        
+        console.log('updatePlayButton called, isPlaying:', state.isPlaying, 'playBtn:', elements.playBtn);
         if (state.isPlaying) {
-            playIcon.classList.add('hidden');
-            pauseIcon.classList.remove('hidden');
+            elements.playBtn.classList.add('playing');
+            console.log('Added playing class, classList:', elements.playBtn.classList.toString());
+            if (elements.miniPlayBtn) {
+                elements.miniPlayBtn.classList.add('playing');
+            }
         } else {
-            playIcon.classList.remove('hidden');
-            pauseIcon.classList.add('hidden');
+            elements.playBtn.classList.remove('playing');
+            if (elements.miniPlayBtn) {
+                elements.miniPlayBtn.classList.remove('playing');
+            }
         }
     }
 
     function selectTrack(index) {
+        // Stop current audio if playing
+        if (state.audio) {
+            state.audio.pause();
+            state.audio.currentTime = 0;
+        }
+
         state.currentTrack = index;
-        state.progress = 0;
         
         // Update active track styling
         elements.tracks.forEach((track, i) => {
             track.classList.toggle('active', i === index);
         });
 
-        // Update now playing
+        // Update now playing title and album
         const trackTitle = elements.tracks[index].querySelector('.track-title').textContent;
-        const trackDuration = elements.tracks[index].querySelector('.track-duration').textContent;
+        const trackAlbum = elements.tracks[index].querySelector('.track-album');
+        const albumText = trackAlbum ? trackAlbum.textContent : '';
         
         if (elements.nowPlayingTitle) {
             elements.nowPlayingTitle.textContent = trackTitle;
         }
-        if (elements.totalTimeEl) {
-            elements.totalTimeEl.textContent = trackDuration;
+        if (elements.nowPlayingAlbum && trackAlbum) {
+            elements.nowPlayingAlbum.textContent = albumText;
         }
+
+        // Update miniplayer title and album
+        if (elements.miniTitle) {
+            elements.miniTitle.textContent = trackTitle;
+        }
+        if (elements.miniAlbum) {
+            elements.miniAlbum.textContent = albumText;
+        }
+
+        // Update artwork from cached data on track element
+        const artworkDataUrl = elements.tracks[index].dataset.artwork || null;
+        updateArtwork(artworkDataUrl);
+        
+        // Check if text needs to scroll
+        checkMiniplayerTextScroll();
+
+        // Reset progress display
         if (elements.currentTimeEl) {
             elements.currentTimeEl.textContent = '0:00';
         }
@@ -222,11 +542,30 @@
             elements.progress.style.width = '0%';
         }
 
-        // Auto-play on track selection
-        if (!state.isPlaying) {
-            state.isPlaying = true;
-            updatePlayButton();
-            simulateProgress();
+        // Get or create audio for this track
+        state.audio = getAudio(index);
+        
+        if (state.audio) {
+            // Update duration display
+            if (state.audio.duration) {
+                const duration = formatTime(Math.floor(state.audio.duration));
+                if (elements.totalTimeEl) {
+                    elements.totalTimeEl.textContent = duration;
+                }
+            }
+
+            // Auto-play on track selection
+            state.audio.play().then(() => {
+                state.isPlaying = true;
+                state.hasInteracted = true;
+                updatePlayButton();
+                // Preload adjacent tracks
+                setTimeout(() => preloadAdjacentTracks(index), 2000);
+            }).catch(err => {
+                console.log('Playback failed:', err);
+                state.isPlaying = false;
+                updatePlayButton();
+            });
         }
     }
 
@@ -245,57 +584,47 @@
     }
 
     function seekTrack(e) {
+        if (!state.audio || !state.audio.duration) return;
+        
         const rect = elements.progressBar.getBoundingClientRect();
         const percent = (e.clientX - rect.left) / rect.width;
-        state.progress = Math.max(0, Math.min(100, percent * 100));
+        state.audio.currentTime = percent * state.audio.duration;
         updateProgressUI();
     }
 
-    function simulateProgress() {
-        // This is a placeholder simulation
-        // Replace with actual audio integration
-        if (!state.isPlaying) return;
-
-        const interval = setInterval(() => {
-            if (!state.isPlaying) {
-                clearInterval(interval);
-                return;
-            }
-
-            state.progress += 0.5;
-            
-            if (state.progress >= 100) {
-                state.progress = 0;
-                playNext();
-                clearInterval(interval);
-            }
-
-            updateProgressUI();
-        }, 100);
-    }
-
     function updateProgressUI() {
-        if (elements.progress) {
-            elements.progress.style.width = `${state.progress}%`;
-        }
+        if (!state.audio || !state.audio.duration) return;
 
-        // Update time display (placeholder)
-        const totalSeconds = parseTimeToSeconds(elements.totalTimeEl?.textContent || '3:00');
-        const currentSeconds = Math.floor((state.progress / 100) * totalSeconds);
+        const percent = (state.audio.currentTime / state.audio.duration) * 100;
         
-        if (elements.currentTimeEl) {
-            elements.currentTimeEl.textContent = formatTime(currentSeconds);
+        if (elements.progress) {
+            elements.progress.style.width = `${percent}%`;
         }
-    }
 
-    function parseTimeToSeconds(timeStr) {
-        const parts = timeStr.split(':');
-        return parseInt(parts[0]) * 60 + parseInt(parts[1]);
+        if (elements.currentTimeEl) {
+            elements.currentTimeEl.textContent = formatTime(Math.floor(state.audio.currentTime));
+        }
+
+        if (elements.totalTimeEl) {
+            elements.totalTimeEl.textContent = formatTime(Math.floor(state.audio.duration));
+        }
+
+        // Update miniplayer progress
+        if (elements.miniProgressFill) {
+            elements.miniProgressFill.style.width = `${percent}%`;
+        }
+        if (elements.miniCurrent) {
+            elements.miniCurrent.textContent = formatTime(Math.floor(state.audio.currentTime));
+        }
+        if (elements.miniTotal) {
+            elements.miniTotal.textContent = formatTime(Math.floor(state.audio.duration));
+        }
     }
 
     function formatTime(seconds) {
+        if (isNaN(seconds)) return '--:--';
         const mins = Math.floor(seconds / 60);
-        const secs = seconds % 60;
+        const secs = Math.floor(seconds % 60);
         return `${mins}:${secs.toString().padStart(2, '0')}`;
     }
 
@@ -343,34 +672,285 @@
     }
 
     // =====================================================
-    // Video Lazy Loading
+    // Miniplayer
     // =====================================================
-    function initVideoLazyLoad() {
-        const videos = document.querySelectorAll('.video-wrapper iframe');
-        
-        const observerOptions = {
-            root: null,
-            rootMargin: '100px',
-            threshold: 0
-        };
+    function initMiniplayer() {
+        if (!elements.miniplayer) {
+            console.log('Miniplayer element not found');
+            return;
+        }
+        if (!elements.playerControls) {
+            console.log('Player controls element not found');
+            return;
+        }
 
-        const observerCallback = (entries, observer) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    const iframe = entry.target;
-                    if (iframe.dataset.src) {
-                        iframe.src = iframe.dataset.src;
-                    }
-                    observer.unobserve(iframe);
+        console.log('Miniplayer initialized');
+
+        // Miniplayer control buttons
+        if (elements.miniPlayBtn) {
+            elements.miniPlayBtn.addEventListener('click', togglePlay);
+        }
+        if (elements.miniPrevBtn) {
+            elements.miniPrevBtn.addEventListener('click', playPrevious);
+        }
+        if (elements.miniNextBtn) {
+            elements.miniNextBtn.addEventListener('click', playNext);
+        }
+
+        // Check visibility on scroll
+        window.addEventListener('scroll', () => {
+            updateMiniplayerVisibility();
+        });
+
+        // Also check on resize
+        window.addEventListener('resize', () => {
+            updateMiniplayerVisibility();
+            checkMiniplayerTextScroll();
+        });
+    }
+
+    function updateMiniplayerVisibility() {
+        if (!elements.miniplayer || !elements.playerControls) return;
+
+        // Only show miniplayer if audio is playing
+        if (!state.isPlaying) {
+            elements.miniplayer.classList.remove('visible');
+            return;
+        }
+
+        // Check if main player controls are visible in viewport
+        const rect = elements.playerControls.getBoundingClientRect();
+        const navHeight = 70;
+        const viewportHeight = window.innerHeight;
+        
+        // Player is visible if any part of it is in the viewport (above the nav)
+        const isPlayerVisible = rect.bottom > 0 && rect.top < (viewportHeight - navHeight);
+
+        console.log('updateMiniplayerVisibility:', { isPlaying: state.isPlaying, isPlayerVisible, rect: rect.top + '-' + rect.bottom });
+
+        if (isPlayerVisible) {
+            elements.miniplayer.classList.remove('visible');
+        } else {
+            console.log('Adding visible class to miniplayer');
+            elements.miniplayer.classList.add('visible');
+        }
+    }
+
+    function checkMiniplayerTextScroll() {
+        if (!elements.miniTextWrapper) return;
+
+        // Reset scrolling class
+        elements.miniTextWrapper.classList.remove('scrolling');
+        
+        // Check if text overflows
+        const wrapper = elements.miniTextWrapper;
+        const container = elements.miniplayer?.querySelector('.miniplayer-info');
+        
+        if (container && wrapper.scrollWidth > container.clientWidth) {
+            // Duplicate content for seamless scroll
+            const originalContent = wrapper.innerHTML;
+            wrapper.innerHTML = originalContent + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + originalContent;
+            wrapper.classList.add('scrolling');
+        }
+    }
+
+    // =====================================================
+    // Video Carousel
+    // =====================================================
+    function initVideoCarousel() {
+        const carousel = document.querySelector('.video-carousel');
+        if (!carousel) return;
+
+        const track = carousel.querySelector('.carousel-track');
+        const items = Array.from(track.querySelectorAll('.video-item'));
+        const prevBtn = carousel.querySelector('.carousel-prev');
+        const nextBtn = carousel.querySelector('.carousel-next');
+        const dotsContainer = document.querySelector('.carousel-dots');
+        const overlay = document.getElementById('videoExpandedOverlay');
+        const expandedIframe = document.getElementById('expandedVideoIframe');
+        const closeBtn = overlay?.querySelector('.video-close-btn');
+        const expandedTitle = overlay?.querySelector('.video-expanded-title');
+        const expandedDesc = overlay?.querySelector('.video-expanded-description');
+
+        let currentIndex = 0;
+        const totalItems = items.length;
+
+        // Create dots
+        items.forEach((_, i) => {
+            const dot = document.createElement('button');
+            dot.className = 'carousel-dot' + (i === 0 ? ' active' : '');
+            dot.setAttribute('aria-label', `Go to video ${i + 1}`);
+            dot.addEventListener('click', () => goToSlide(i));
+            dotsContainer.appendChild(dot);
+        });
+
+        const dots = dotsContainer.querySelectorAll('.carousel-dot');
+
+        function updateCarousel() {
+            const containerWidth = carousel.querySelector('.carousel-track-container').offsetWidth;
+            const itemWidth = items[0].offsetWidth;
+            const gap = parseInt(getComputedStyle(track).gap) || 24;
+            
+            // Calculate offset to center the current item
+            const centerOffset = (containerWidth - itemWidth) / 2;
+            const translateX = -(currentIndex * (itemWidth + gap)) + centerOffset;
+            
+            track.style.transform = `translateX(${translateX}px)`;
+
+            // Update item classes for styling
+            items.forEach((item, i) => {
+                item.classList.remove('center', 'adjacent', 'edge');
+                const distance = Math.abs(i - currentIndex);
+                
+                if (distance === 0) {
+                    item.classList.add('center');
+                } else if (distance === 1) {
+                    item.classList.add('adjacent');
+                } else {
+                    item.classList.add('edge');
                 }
             });
-        };
 
-        const observer = new IntersectionObserver(observerCallback, observerOptions);
+            // Update dots
+            dots.forEach((dot, i) => {
+                dot.classList.toggle('active', i === currentIndex);
+            });
 
-        videos.forEach(video => {
-            observer.observe(video);
+            // Update button states
+            prevBtn.disabled = currentIndex === 0;
+            nextBtn.disabled = currentIndex === totalItems - 1;
+        }
+
+        function goToSlide(index) {
+            currentIndex = Math.max(0, Math.min(index, totalItems - 1));
+            updateCarousel();
+        }
+
+        function nextSlide() {
+            if (currentIndex < totalItems - 1) {
+                currentIndex++;
+                updateCarousel();
+            }
+        }
+
+        function prevSlide() {
+            if (currentIndex > 0) {
+                currentIndex--;
+                updateCarousel();
+            }
+        }
+
+        // Open expanded video overlay
+        function openExpandedVideo(item) {
+            const placeholder = item.querySelector('.video-placeholder');
+            if (!placeholder || !overlay) return;
+
+            const videoSrc = placeholder.dataset.src;
+            const title = item.querySelector('.video-title')?.textContent || '';
+            const description = item.querySelector('.video-description')?.textContent || '';
+
+            // Set iframe src with autoplay
+            expandedIframe.src = videoSrc + '&autoplay=1';
+            if (expandedTitle) expandedTitle.textContent = title;
+            if (expandedDesc) expandedDesc.textContent = description;
+
+            overlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Close expanded video overlay
+        function closeExpandedVideo() {
+            if (!overlay) return;
+            
+            overlay.classList.remove('active');
+            document.body.style.overflow = '';
+            
+            // Stop video by clearing src
+            setTimeout(() => {
+                expandedIframe.src = '';
+            }, 400);
+        }
+
+        // Event listeners
+        prevBtn.addEventListener('click', prevSlide);
+        nextBtn.addEventListener('click', nextSlide);
+
+        // Click on center video to expand
+        items.forEach((item, i) => {
+            item.addEventListener('click', () => {
+                if (i === currentIndex) {
+                    // Center item - open expanded view
+                    openExpandedVideo(item);
+                } else {
+                    // Other items - navigate to them
+                    goToSlide(i);
+                }
+            });
         });
+
+        // Close overlay events
+        if (closeBtn) {
+            closeBtn.addEventListener('click', closeExpandedVideo);
+        }
+        
+        if (overlay) {
+            overlay.addEventListener('click', (e) => {
+                if (e.target === overlay) {
+                    closeExpandedVideo();
+                }
+            });
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (overlay?.classList.contains('active')) {
+                if (e.key === 'Escape') {
+                    closeExpandedVideo();
+                }
+            } else if (document.activeElement?.closest('.video-carousel')) {
+                if (e.key === 'ArrowLeft') {
+                    prevSlide();
+                } else if (e.key === 'ArrowRight') {
+                    nextSlide();
+                }
+            }
+        });
+
+        // Touch/swipe support
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        track.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        }, { passive: true });
+
+        track.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        }, { passive: true });
+
+        function handleSwipe() {
+            const diff = touchStartX - touchEndX;
+            const threshold = 50;
+
+            if (Math.abs(diff) > threshold) {
+                if (diff > 0) {
+                    nextSlide();
+                } else {
+                    prevSlide();
+                }
+            }
+        }
+
+        // Handle window resize
+        let resizeTimeout;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(updateCarousel, 100);
+        });
+
+        // Initial update
+        updateCarousel();
     }
 
     // =====================================================
@@ -418,8 +998,11 @@
         initScrollSpy();
         initCreditsModal();
         initMusicPlayer();
+        loadAllTrackTags();           // Load ID3 metadata (title, album)
+        preloadAllTrackMetadata();    // Load track durations immediately
         initScrollAnimations();
-        initVideoLazyLoad();
+        initMiniplayer();
+        initVideoCarousel();
         initParallax();
         initPreloader();
 
