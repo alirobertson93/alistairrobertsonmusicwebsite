@@ -1,0 +1,17 @@
+{
+  "port": 8080,
+  "host": "0.0.0.0",
+  "root": ".",
+  "open": false,
+  "ignore": "node_modules",
+  "file": "index.html",
+  "wait": 100,
+  "logLevel": 2,
+  "middleware": [],
+  "noCors": false,
+  "headers": {
+    "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0",
+    "Pragma": "no-cache",
+    "Expires": "0"
+  }
+}
