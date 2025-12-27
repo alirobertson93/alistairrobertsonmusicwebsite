@@ -223,6 +223,156 @@
         }
     }
 
+    // =====================================================
+    // Track Text Scrolling (Independent title/album scroll)
+    // =====================================================
+    function initTrackTextScrolling() {
+        elements.tracks.forEach((track, index) => {
+            const trackInfo = track.querySelector('.track-info');
+            if (!trackInfo) return;
+
+            const titleEl = trackInfo.querySelector('.track-title');
+            const albumEl = trackInfo.querySelector('.track-album');
+
+            // Wrap title in a wrapper div
+            if (titleEl && !titleEl.parentElement.classList.contains('track-title-wrapper')) {
+                const titleWrapper = document.createElement('div');
+                titleWrapper.className = 'track-title-wrapper';
+                titleEl.parentNode.insertBefore(titleWrapper, titleEl);
+                titleWrapper.appendChild(titleEl);
+            }
+
+            // Wrap album in a wrapper div
+            if (albumEl && !albumEl.parentElement.classList.contains('track-album-wrapper')) {
+                const albumWrapper = document.createElement('div');
+                albumWrapper.className = 'track-album-wrapper';
+                albumEl.parentNode.insertBefore(albumWrapper, albumEl);
+                albumWrapper.appendChild(albumEl);
+            }
+
+            // Set up hover events for scrolling
+            track.addEventListener('mouseenter', () => {
+                checkAndEnableScrolling(track);
+            });
+
+            track.addEventListener('mouseleave', () => {
+                // Only stop scrolling if track is not playing
+                if (index !== state.currentTrack || !state.isPlaying) {
+                    stopTrackScrolling(track);
+                }
+            });
+        });
+    }
+
+    function checkAndEnableScrolling(track) {
+        const trackInfo = track.querySelector('.track-info');
+        const titleWrapper = track.querySelector('.track-title-wrapper');
+        const albumWrapper = track.querySelector('.track-album-wrapper');
+        const titleEl = track.querySelector('.track-title');
+        const albumEl = track.querySelector('.track-album');
+
+        if (!trackInfo) return;
+
+        // Get the available width for track-info (the middle column)
+        const trackInfoWidth = trackInfo.clientWidth;
+        const hasAlbum = albumEl && albumEl.textContent.trim();
+        
+        // Calculate max width for title based on whether album exists
+        // 80% if album present, 100% otherwise (matching CSS)
+        const titleMaxWidth = hasAlbum ? trackInfoWidth * 0.8 : trackInfoWidth;
+        
+        // Check and scroll title if needed - compare text width to max allowed width
+        if (titleWrapper && titleEl) {
+            const titleTextWidth = titleEl.scrollWidth;
+            if (titleTextWidth > titleMaxWidth) {
+                titleWrapper.classList.add('scroll-active');
+                enableScrolling(titleEl, titleWrapper);
+            }
+        }
+
+        // Check and scroll album if needed - album wrapper always fills remaining space
+        if (hasAlbum && albumWrapper && albumEl) {
+            const albumWrapperWidth = albumWrapper.clientWidth;
+            const albumTextWidth = albumEl.scrollWidth;
+            
+            if (albumTextWidth > albumWrapperWidth) {
+                enableScrolling(albumEl, albumWrapper);
+            }
+        }
+    }
+
+    function enableScrolling(textEl, wrapper) {
+        // Don't duplicate if already scrolling
+        if (textEl.classList.contains('scrolling')) return;
+
+        const originalText = textEl.textContent;
+        const textWidth = textEl.scrollWidth;
+
+        // Calculate animation duration based on text length (pixels per second)
+        const pixelsPerSecond = 30;
+        const scrollDistance = textWidth;
+        const duration = Math.max(5, scrollDistance / pixelsPerSecond);
+
+        // Set custom duration
+        textEl.style.setProperty('--scroll-duration', `${duration}s`);
+
+        // Add scroll-active to wrapper for overflow:hidden
+        wrapper.classList.add('scroll-active');
+
+        // Duplicate content for seamless scroll
+        textEl.innerHTML = originalText + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + originalText;
+        textEl.classList.add('scrolling');
+    }
+
+    function stopTrackScrolling(track) {
+        const titleEl = track.querySelector('.track-title');
+        const titleWrapper = track.querySelector('.track-title-wrapper');
+        const albumEl = track.querySelector('.track-album');
+        const albumWrapper = track.querySelector('.track-album-wrapper');
+
+        if (titleEl && titleEl.classList.contains('scrolling')) {
+            titleEl.classList.remove('scrolling');
+            // Restore original text (remove duplicate)
+            const text = titleEl.textContent;
+            const separator = '\u00A0\u00A0\u00A0\u00A0\u00A0'; // 5 non-breaking spaces
+            const parts = text.split(separator);
+            if (parts.length > 1) {
+                titleEl.textContent = parts[0];
+            }
+        }
+        // Remove scroll-active from title wrapper
+        if (titleWrapper) {
+            titleWrapper.classList.remove('scroll-active');
+        }
+
+        if (albumEl && albumEl.classList.contains('scrolling')) {
+            albumEl.classList.remove('scrolling');
+            // Restore original text (remove duplicate)
+            const text = albumEl.textContent;
+            const separator = '\u00A0\u00A0\u00A0\u00A0\u00A0';
+            const parts = text.split(separator);
+            if (parts.length > 1) {
+                albumEl.textContent = parts[0];
+            }
+        }
+    }
+
+    // Get clean text from an element (without scroll duplication)
+    function getCleanText(el) {
+        if (!el) return '';
+        const text = el.textContent;
+        const separator = '\u00A0\u00A0\u00A0\u00A0\u00A0';
+        const parts = text.split(separator);
+        return parts[0] || text;
+    }
+
+    function updatePlayingTrackScrolling() {
+        // Enable scrolling on the currently playing track
+        if (state.isPlaying && elements.tracks[state.currentTrack]) {
+            checkAndEnableScrolling(elements.tracks[state.currentTrack]);
+        }
+    }
+
     // Extract clean title from filename (fallback if no metadata)
     function getTitleFromFilename(src) {
         const filename = src.split('/').pop();
@@ -439,12 +589,17 @@
             state.isPlaying = false;
             updatePlayButton();
             updateMiniplayerVisibility();
+            // Stop scrolling on current track when paused
+            if (elements.tracks[state.currentTrack]) {
+                stopTrackScrolling(elements.tracks[state.currentTrack]);
+            }
         } else {
             state.audio.play().then(() => {
                 state.isPlaying = true;
                 state.hasInteracted = true;
                 updatePlayButton();
                 updateMiniplayerVisibility();
+                updatePlayingTrackScrolling();
                 // Start preloading adjacent tracks after first interaction
                 setTimeout(() => preloadAdjacentTracks(state.currentTrack), 2000);
             }).catch(err => {
@@ -494,6 +649,11 @@
     }
 
     function selectTrack(index) {
+        // Stop scrolling on previously playing track
+        if (elements.tracks[state.currentTrack]) {
+            stopTrackScrolling(elements.tracks[state.currentTrack]);
+        }
+
         // Stop current audio if playing
         if (state.audio) {
             state.audio.pause();
@@ -507,15 +667,16 @@
             track.classList.toggle('active', i === index);
         });
 
-        // Update now playing title and album
-        const trackTitle = elements.tracks[index].querySelector('.track-title').textContent;
-        const trackAlbum = elements.tracks[index].querySelector('.track-album');
-        const albumText = trackAlbum ? trackAlbum.textContent : '';
+        // Update now playing title and album (get clean text without scroll duplication)
+        const titleEl = elements.tracks[index].querySelector('.track-title');
+        const albumEl = elements.tracks[index].querySelector('.track-album');
+        const trackTitle = getCleanText(titleEl);
+        const albumText = getCleanText(albumEl);
         
         if (elements.nowPlayingTitle) {
             elements.nowPlayingTitle.textContent = trackTitle;
         }
-        if (elements.nowPlayingAlbum && trackAlbum) {
+        if (elements.nowPlayingAlbum) {
             elements.nowPlayingAlbum.textContent = albumText;
         }
 
@@ -559,6 +720,7 @@
                 state.isPlaying = true;
                 state.hasInteracted = true;
                 updatePlayButton();
+                updatePlayingTrackScrolling();
                 // Preload adjacent tracks
                 setTimeout(() => preloadAdjacentTracks(index), 2000);
             }).catch(err => {
@@ -998,6 +1160,7 @@
         initScrollSpy();
         initCreditsModal();
         initMusicPlayer();
+        initTrackTextScrolling();     // Set up independent title/album scrolling
         loadAllTrackTags();           // Load ID3 metadata (title, album)
         preloadAllTrackMetadata();    // Load track durations immediately
         initScrollAnimations();

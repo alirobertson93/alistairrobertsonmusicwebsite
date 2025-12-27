@@ -446,12 +446,39 @@ h1, h2, h3, h4, h5, h6 {
     overflow: hidden;
 }
 
+.track-title-wrapper {
+    flex: 0 0 auto;
+    max-width: 100%;
+    min-width: 0;
+    position: relative;
+}
+
+/* When album is present, limit title to 80% */
+.track-info:has(.track-album:not(:empty)) .track-title-wrapper {
+    max-width: 80%;
+}
+
+/* Only hide overflow when scrolling is active */
+.track-title-wrapper.scroll-active {
+    overflow: hidden;
+}
+
+.track-album-wrapper {
+    flex: 1 1 auto;
+    min-width: 0;
+    position: relative;
+    overflow: hidden;
+}
+
 .track-title {
     font-size: 0.9375rem;
     font-weight: 400;
     white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    display: inline-block;
+}
+
+.track-title.scrolling {
+    animation: trackTextScroll var(--scroll-duration, 8s) linear infinite;
 }
 
 .track-album {
@@ -459,12 +486,27 @@ h1, h2, h3, h4, h5, h6 {
     font-weight: 300;
     color: var(--color-text-muted);
     white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    flex-shrink: 1;
+    display: inline-block;
+}
+
+.track-album.scrolling {
+    animation: trackTextScroll var(--scroll-duration, 8s) linear infinite;
+}
+
+@keyframes trackTextScroll {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-50%);
+    }
 }
 
 .track-album:empty {
+    display: none;
+}
+
+.track-album-wrapper:has(.track-album:empty) {
     display: none;
 }
 
