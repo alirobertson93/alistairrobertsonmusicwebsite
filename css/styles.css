@@ -98,7 +98,7 @@ h1, h2, h3, h4, h5, h6 {
 /* Container */
 .container {
     width: 100%;
-    max-width: 1400px;
+    max-width: 1050px;
     margin: 0 auto;
     padding: 0 var(--spacing-md);
 }
@@ -282,7 +282,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .about-content {
     display: grid;
-    grid-template-columns: 1fr 1.5fr;
+    grid-template-columns: 1fr 1.2fr;
     gap: var(--spacing-lg);
     align-items: start;
 }
@@ -325,6 +325,7 @@ h1, h2, h3, h4, h5, h6 {
     margin-bottom: var(--spacing-sm);
     font-size: 0.9375rem;
     line-height: 1.8;
+    max-width: 52ch;
 }
 
 .about-text p:last-child {
@@ -1220,7 +1221,8 @@ h1, h2, h3, h4, h5, h6 {
 .scores-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: var(--spacing-md);
+    gap: var(--spacing-sm);
+    max-width: 100%;
 }
 
 .score-item {
