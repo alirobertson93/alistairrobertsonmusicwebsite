@@ -31,6 +31,66 @@
     --nav-height: 70px;
 }
 
+/* =====================================================
+   LOADING SCREEN
+   ===================================================== */
+.loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--color-bg-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    transition: opacity 0.6s ease, visibility 0.6s ease;
+}
+
+.loader.loaded {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.loader-content {
+    text-align: center;
+}
+
+.loader-text {
+    font-family: var(--font-display);
+    font-size: clamp(1rem, 3vw, 1.5rem);
+    font-weight: 300;
+    letter-spacing: 0.3em;
+    color: var(--color-text-primary);
+    margin-bottom: 2rem;
+    opacity: 0;
+    animation: fadeIn 0.6s ease 0.2s forwards;
+}
+
+.loader-bar {
+    width: 200px;
+    height: 1px;
+    background-color: var(--color-border);
+    margin: 0 auto;
+    overflow: hidden;
+    opacity: 0;
+    animation: fadeIn 0.6s ease 0.4s forwards;
+}
+
+.loader-progress {
+    height: 100%;
+    width: 0%;
+    background-color: var(--color-text-primary);
+    animation: loaderProgress 1.5s ease-out 0.5s forwards;
+}
+
+@keyframes loaderProgress {
+    0% { width: 0%; }
+    100% { width: 100%; }
+}
+
 /* Reset & Base Styles */
 *, *::before, *::after {
     margin: 0;
@@ -51,6 +111,38 @@ body {
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+}
+
+/* Prevent scroll during loading */
+body.loading {
+    overflow: hidden;
+}
+
+/* =====================================================
+   LAZY LOADING IMAGE EFFECTS
+   ===================================================== */
+/* Smooth fade-in for lazy loaded images */
+.score-image img,
+.video-thumbnail img {
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+.score-image img.loaded,
+.video-thumbnail img.loaded {
+    opacity: 1;
+}
+
+/* Staggered reveal animation for score items */
+.score-item {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.score-item.visible {
+    opacity: 1;
+    transform: translateY(0);
 }
 
 a {
@@ -1653,6 +1745,12 @@ h1, h2, h3, h4, h5, h6 {
         --spacing-lg: 3rem;
         --spacing-xl: 5rem;
         --nav-height: 60px;
+    }
+    
+    /* Hero image 1.75x larger on mobile */
+    .hero-overlay {
+        transform: scale(1.75);
+        transform-origin: center center;
     }
     
     .hero-title {

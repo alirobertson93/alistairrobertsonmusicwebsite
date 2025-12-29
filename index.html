@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Alistair Robertson | Composer</title>
+    
+    <!-- Critical: Preload hero image for faster LCP -->
+    <link rel="preload" href="images/tramontano-hero.webp" as="image" fetchpriority="high">
+    
     <link rel="stylesheet" href="css/styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,6 +15,16 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jsmediatags/3.9.5/jsmediatags.min.js"></script>
 </head>
 <body>
+    <!-- Loading Splash Screen -->
+    <div class="loader" id="loader">
+        <div class="loader-content">
+            <div class="loader-text">ALISTAIR ROBERTSON</div>
+            <div class="loader-bar">
+                <div class="loader-progress"></div>
+            </div>
+        </div>
+    </div>
+
     <!-- Hero Section -->
     <section id="home" class="hero">
         <div class="hero-overlay" data-parallax></div>
@@ -33,7 +47,7 @@
             <h2 class="section-title">ABOUT</h2>
             <div class="about-content">
                 <div class="about-image">
-                    <img src="images/bio-picture.webp" alt="Alistair Robertson">
+                    <img src="images/bio-picture.webp" alt="Alistair Robertson" loading="eager" decoding="async" fetchpriority="high">
                 </div>
                 <div class="about-text">
                     <h3>Alistair Robertson</h3>
@@ -462,7 +476,7 @@
             <div class="scores-grid">
                 <a href="scores/Alistair Robertson - Awakening - Full Score.pdf" class="score-item" target="_blank">
                     <div class="score-image">
-                        <img src="images/Awakening-thumbnail.webp" alt="Awakening Score Preview">
+                        <img src="images/Awakening-thumbnail.webp" alt="Awakening Score Preview" loading="lazy" decoding="async">
                         <div class="score-overlay">
                             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
                         </div>
@@ -471,7 +485,7 @@
                 </a>
                 <a href="scores/Alistair Robertson - Breath - Full Score.pdf" class="score-item" target="_blank">
                     <div class="score-image">
-                        <img src="images/Breath-thumbnail.webp" alt="Breath Score Preview">
+                        <img src="images/Breath-thumbnail.webp" alt="Breath Score Preview" loading="lazy" decoding="async">
                         <div class="score-overlay">
                             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
                         </div>
@@ -480,7 +494,7 @@
                 </a>
                 <a href="scores/Alistair Robertson - Dangerous Skies - Full Score.pdf" class="score-item" target="_blank">
                     <div class="score-image">
-                        <img src="images/DangerousSkies-thumbnail.webp" alt="Dangerous Skies Score Preview">
+                        <img src="images/DangerousSkies-thumbnail.webp" alt="Dangerous Skies Score Preview" loading="lazy" decoding="async">
                         <div class="score-overlay">
                             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
                         </div>
@@ -489,7 +503,7 @@
                 </a>
                 <a href="scores/Alistair Robertson - The Debt Of So Many - Full Score.pdf" class="score-item" target="_blank">
                     <div class="score-image">
-                        <img src="images/DebtOfSoMany-thumbnail.webp" alt="The Debt Of So Many Score Preview">
+                        <img src="images/DebtOfSoMany-thumbnail.webp" alt="The Debt Of So Many Score Preview" loading="lazy" decoding="async">
                         <div class="score-overlay">
                             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
                         </div>
@@ -498,7 +512,7 @@
                 </a>
                 <a href="scores/Alistair Robertson - Duet for Violin and Piano - Full Score.pdf" class="score-item" target="_blank">
                     <div class="score-image">
-                        <img src="images/Duet-thumbnail.webp" alt="Duet for Violin and Piano Score Preview">
+                        <img src="images/Duet-thumbnail.webp" alt="Duet for Violin and Piano Score Preview" loading="lazy" decoding="async">
                         <div class="score-overlay">
                             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
                         </div>
@@ -507,7 +521,7 @@
                 </a>
                 <a href="scores/Alistair Robertson - Duologue for Viola and Double Bass - Full Score.pdf" class="score-item" target="_blank">
                     <div class="score-image">
-                        <img src="images/Duologue-thumbnail.webp" alt="Duologue for Viola and Double Bass Score Preview">
+                        <img src="images/Duologue-thumbnail.webp" alt="Duologue for Viola and Double Bass Score Preview" loading="lazy" decoding="async">
                         <div class="score-overlay">
                             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
                         </div>
@@ -516,7 +530,7 @@
                 </a>
                 <a href="scores/Alistair Robertson - A Fairytale Fantasy - Full Score.pdf" class="score-item" target="_blank">
                     <div class="score-image">
-                        <img src="images/FairytaleFantasy-thumbnail.webp" alt="A Fairytale Fantasy Score Preview">
+                        <img src="images/FairytaleFantasy-thumbnail.webp" alt="A Fairytale Fantasy Score Preview" loading="lazy" decoding="async">
                         <div class="score-overlay">
                             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
                         </div>
@@ -525,7 +539,7 @@
                 </a>
                 <a href="scores/Alistair Robertson - Ggnunc - Full Score.pdf" class="score-item" target="_blank">
                     <div class="score-image">
-                        <img src="images/Gugnunc-thumbnail.webp" alt="Gugnunc Score Preview">
+                        <img src="images/Gugnunc-thumbnail.webp" alt="Gugnunc Score Preview" loading="lazy" decoding="async">
                         <div class="score-overlay">
                             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
                         </div>
@@ -534,7 +548,7 @@
                 </a>
                 <a href="scores/Alistair Robertson - Magical Chase - Full Score.pdf" class="score-item" target="_blank">
                     <div class="score-image">
-                        <img src="images/MagicalChase-thumbnail.webp" alt="Magical Chase Score Preview">
+                        <img src="images/MagicalChase-thumbnail.webp" alt="Magical Chase Score Preview" loading="lazy" decoding="async">
                         <div class="score-overlay">
                             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
                         </div>
@@ -543,7 +557,7 @@
                 </a>
                 <a href="scores/Alistair Robertson - Romance - Full Score.pdf" class="score-item" target="_blank">
                     <div class="score-image">
-                        <img src="images/Romance-thumbnail.webp" alt="Romance Score Preview">
+                        <img src="images/Romance-thumbnail.webp" alt="Romance Score Preview" loading="lazy" decoding="async">
                         <div class="score-overlay">
                             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
                         </div>
@@ -552,7 +566,7 @@
                 </a>
                 <a href="scores/Alistair Robertson - Through The Bookcase - Full Score.pdf" class="score-item" target="_blank">
                     <div class="score-image">
-                        <img src="images/ThroughTheBookcase-thumbnail.webp" alt="Through The Bookcase Score Preview">
+                        <img src="images/ThroughTheBookcase-thumbnail.webp" alt="Through The Bookcase Score Preview" loading="lazy" decoding="async">
                         <div class="score-overlay">
                             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
                         </div>

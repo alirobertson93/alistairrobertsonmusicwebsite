@@ -451,8 +451,10 @@
                                 if (elements.nowPlayingAlbum && tags.album) {
                                     elements.nowPlayingAlbum.textContent = tags.album;
                                 }
-                                // Update artwork
-                                updateArtwork(artworkDataUrl);
+                                // Only update artwork if user has already interacted (pressed play)
+                                if (state.hasInteracted) {
+                                    updateArtwork(artworkDataUrl);
+                                }
                             }
                         },
                         onError: function(error) {
@@ -594,9 +596,18 @@
                 stopTrackScrolling(elements.tracks[state.currentTrack]);
             }
         } else {
+            // Set hasInteracted before play so artwork can show
+            const isFirstInteraction = !state.hasInteracted;
+            state.hasInteracted = true;
+            
+            // If first interaction, show artwork for current track immediately
+            if (isFirstInteraction) {
+                const artworkDataUrl = elements.tracks[state.currentTrack]?.dataset.artwork || null;
+                updateArtwork(artworkDataUrl);
+            }
+            
             state.audio.play().then(() => {
                 state.isPlaying = true;
-                state.hasInteracted = true;
                 updatePlayButton();
                 updateMiniplayerVisibility();
                 updatePlayingTrackScrolling();
@@ -687,6 +698,9 @@
         if (elements.miniAlbum) {
             elements.miniAlbum.textContent = albumText;
         }
+
+        // Clicking a track counts as interaction - show artwork from now on
+        state.hasInteracted = true;
 
         // Update artwork from cached data on track element
         const artworkDataUrl = elements.tracks[index].dataset.artwork || null;
@@ -1145,18 +1159,95 @@
     }
 
     // =====================================================
-    // Preloader
+    // Preloader / Loading Screen
     // =====================================================
     function initPreloader() {
-        window.addEventListener('load', () => {
-            document.body.classList.add('loaded');
+        const loader = document.getElementById('loader');
+        const heroImage = new Image();
+        
+        // Add loading class to prevent scroll
+        document.body.classList.add('loading');
+        
+        // Preload critical hero image
+        heroImage.src = 'images/tramontano-hero.webp';
+        
+        const hideLoader = () => {
+            if (loader) {
+                loader.classList.add('loaded');
+                document.body.classList.remove('loading');
+            }
+        };
+        
+        // Wait for hero image OR timeout (whichever comes first)
+        const timeout = setTimeout(hideLoader, 3000); // Max 3s wait
+        
+        heroImage.onload = () => {
+            clearTimeout(timeout);
+            // Small delay to allow progress bar animation to complete
+            setTimeout(hideLoader, 800);
+        };
+        
+        heroImage.onerror = () => {
+            clearTimeout(timeout);
+            hideLoader();
+        };
+    }
+
+    // =====================================================
+    // Lazy Image Loading with Staggered Reveal
+    // =====================================================
+    function initLazyImages() {
+        // Handle image load events for fade-in
+        const lazyImages = document.querySelectorAll('.score-image img, .video-thumbnail img');
+        lazyImages.forEach(img => {
+            if (img.complete) {
+                img.classList.add('loaded');
+            } else {
+                img.addEventListener('load', () => {
+                    img.classList.add('loaded');
+                });
+            }
         });
+        
+        // Staggered reveal for score items using Intersection Observer
+        const scoreItems = document.querySelectorAll('.score-item');
+        
+        if ('IntersectionObserver' in window) {
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px 0px -50px 0px',
+                threshold: 0.1
+            };
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry, index) => {
+                    if (entry.isIntersecting) {
+                        // Stagger the reveal based on position
+                        const item = entry.target;
+                        const itemIndex = Array.from(scoreItems).indexOf(item);
+                        const delay = (itemIndex % 4) * 100; // Stagger by column position
+                        
+                        setTimeout(() => {
+                            item.classList.add('visible');
+                        }, delay);
+                        
+                        observer.unobserve(item);
+                    }
+                });
+            }, observerOptions);
+            
+            scoreItems.forEach(item => observer.observe(item));
+        } else {
+            // Fallback for older browsers
+            scoreItems.forEach(item => item.classList.add('visible'));
+        }
     }
 
     // =====================================================
     // Initialize
     // =====================================================
     function init() {
+        initPreloader();
         initSmoothScroll();
         initScrollSpy();
         initCreditsModal();
@@ -1168,7 +1259,7 @@
         initMiniplayer();
         initVideoCarousel();
         initParallax();
-        initPreloader();
+        initLazyImages();
 
         // Log initialization
         console.log('Alistair Robertson Music Website initialized');
