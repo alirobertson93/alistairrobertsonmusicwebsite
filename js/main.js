@@ -1120,7 +1120,7 @@
     // =====================================================
     function initParallax() {
         const hero = document.querySelector('.hero');
-        const heroOverlay = document.querySelector('.hero-overlay');
+        const heroOverlay = document.querySelector('.hero-overlay[data-parallax]');
         
         if (!hero || !heroOverlay) return;
 
@@ -1130,9 +1130,10 @@
             if (!ticking) {
                 window.requestAnimationFrame(() => {
                     const scrolled = window.pageYOffset;
-                    const rate = scrolled * 0.3;
+                    const heroHeight = hero.offsetHeight;
                     
-                    if (scrolled < window.innerHeight) {
+                    if (scrolled < heroHeight) {
+                        const rate = scrolled * 0.6;
                         heroOverlay.style.transform = `translateY(${rate}px)`;
                     }
                     

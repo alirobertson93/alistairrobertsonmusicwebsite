@@ -160,8 +160,34 @@ h1, h2, h3, h4, h5, h6 {
     left: 0;
     right: 0;
     bottom: 0;
-    background: url('../images/hero-bg.jpg') center/cover no-repeat;
-    opacity: 0.3;
+    background: url('../images/tramontano-hero.webp') center/cover no-repeat;
+    opacity: 0.15;
+    will-change: transform;
+    transform: translateZ(0);
+}
+
+/* Gradient overlay to blend image into background */
+.hero::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        linear-gradient(to bottom, 
+            rgba(10, 10, 10, 0.4) 0%,
+            rgba(10, 10, 10, 0.2) 30%,
+            rgba(10, 10, 10, 0.3) 70%,
+            rgba(10, 10, 10, 0.9) 100%
+        ),
+        linear-gradient(135deg, 
+            rgba(26, 26, 46, 0.6) 0%, 
+            rgba(10, 10, 10, 0.4) 50%, 
+            rgba(26, 26, 26, 0.5) 100%
+        );
+    pointer-events: none;
+    z-index: 1;
 }
 
 .hero-content {
