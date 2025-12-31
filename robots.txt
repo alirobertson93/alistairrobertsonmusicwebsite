@@ -1,0 +1,7 @@
+# robots.txt for alistairrobertsonmusic.com
+
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://alistairrobertsonmusic.com/sitemap.xml
