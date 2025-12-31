@@ -5,10 +5,13 @@
   "scripts": {
     "dev": "browser-sync start --server --files '**/*.html, **/*.css, **/*.js' --no-notify --no-cache --no-ghost-mode --host=0.0.0.0 --port=8080",
     "dev:live-server": "live-server --host=0.0.0.0 --port=8080 --no-browser --ignore=node_modules",
-    "start": "npm run dev"
+    "start": "npm run dev",
+    "build:manifest": "node scripts/generate-manifest.js"
   },
   "devDependencies": {
     "browser-sync": "^3.0.3",
-    "live-server": "^1.2.2"
+    "live-server": "^1.2.2",
+    "music-metadata": "^11.10.3",
+    "sharp": "^0.34.5"
   }
 }

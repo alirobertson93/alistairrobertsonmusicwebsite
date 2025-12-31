@@ -1,0 +1,238 @@
+{
+  "generated": "2025-12-31T00:35:05.271Z",
+  "trackCount": 29,
+  "tracks": [
+    {
+      "src": "audio/01 Breath [Extract].mp3",
+      "title": "Breath [Extract]",
+      "album": "'Breath' - Rescored",
+      "artist": "Alistair Robertson",
+      "duration": 45,
+      "artwork": "artwork/breath-extract.webp"
+    },
+    {
+      "src": "audio/02 Blackout - Main Theme & Chapter.mp3",
+      "title": "Main Theme & Chapter",
+      "album": "Blackout",
+      "artist": "Alistair Robertson",
+      "duration": 49,
+      "artwork": "artwork/main-theme-chapter.webp"
+    },
+    {
+      "src": "audio/03 Romance [Extracts Edits].mp3",
+      "title": "Romance [Extracts Edit]",
+      "album": "Performed by the LA Studio Symphony Orchestra",
+      "artist": "Alistair Robertson",
+      "duration": 60,
+      "artwork": "artwork/romance-extracts-edit.webp"
+    },
+    {
+      "src": "audio/04 Awakening [Extract].mp3",
+      "title": "Awakening [Extract]",
+      "album": "Performed by the Moravian Philharmonic Orchestra",
+      "artist": "Alistair Robertson",
+      "duration": 60,
+      "artwork": "artwork/awakening-extract.webp"
+    },
+    {
+      "src": "audio/05 Through The Bookcase.mp3",
+      "title": "Through the Bookcase",
+      "album": "",
+      "artist": "Alistair Robertson",
+      "duration": 155,
+      "artwork": "artwork/through-the-bookcase.webp"
+    },
+    {
+      "src": "audio/06 Waves.mp3",
+      "title": "Waves",
+      "album": "",
+      "artist": "Alistair Robertson",
+      "duration": 136,
+      "artwork": "artwork/waves.webp"
+    },
+    {
+      "src": "audio/07 Magical Chase.mp3",
+      "title": "Magical Chase",
+      "album": "",
+      "artist": "Alistair Robertson",
+      "duration": 61,
+      "artwork": null
+    },
+    {
+      "src": "audio/08 Fairytale Fantasy [Extract].mp3",
+      "title": "A Fairytale Fantasy [Extract]",
+      "album": "",
+      "artist": "Alistair Robertson",
+      "duration": 107,
+      "artwork": null
+    },
+    {
+      "src": "audio/09 Sum of All Parts.mp3",
+      "title": "Sum of All Parts",
+      "album": "The Science Museim - Announcing Mathematics: The Winton Gallery Designed by Zaha Hadid Architects",
+      "artist": "Alistair Robertson",
+      "duration": 52,
+      "artwork": "artwork/sum-of-all-parts.webp"
+    },
+    {
+      "src": "audio/10 Dangerous Skies - Main Theme.mp3",
+      "title": "Main Theme",
+      "album": "Dangerous Skies",
+      "artist": "Alistair Robertson",
+      "duration": 53,
+      "artwork": null
+    },
+    {
+      "src": "audio/11 Reaching The Lair [Extracts Edit].mp3",
+      "title": "Reaching the Lair [Extracts Edit]",
+      "album": "",
+      "artist": "Alistair Robertson",
+      "duration": 64,
+      "artwork": null
+    },
+    {
+      "src": "audio/12 Ed.mp3",
+      "title": "Ed",
+      "album": "'Ed' - Rescored",
+      "artist": "Alistair Robertson",
+      "duration": 92,
+      "artwork": null
+    },
+    {
+      "src": "audio/13 Paul's Early Life (Orchestra Version).mp3",
+      "title": "Paul's Early Life",
+      "album": "Man from Pretentia OST",
+      "artist": "Alistair Robertson",
+      "duration": 109,
+      "artwork": null
+    },
+    {
+      "src": "audio/14 The End of Our Time [Extract].mp3",
+      "title": "The End of Our Time [Extract]",
+      "album": "",
+      "artist": "Alistair Robertson",
+      "duration": 28,
+      "artwork": null
+    },
+    {
+      "src": "audio/15 Half Life - Main Theme.mp3",
+      "title": "Main Theme",
+      "album": "Half Life",
+      "artist": "Alistair Robertson",
+      "duration": 62,
+      "artwork": null
+    },
+    {
+      "src": "audio/16 Emergence [Extract].mp3",
+      "title": "Emergence [Extract]",
+      "album": "'Salience' - Rescored",
+      "artist": "Alistair Robertson",
+      "duration": 30,
+      "artwork": null
+    },
+    {
+      "src": "audio/17 Stories From Herodotus - Main Theme.mp3",
+      "title": "Herodotus Theme",
+      "album": "Stories from Herodotus",
+      "artist": "Alistair Robertson",
+      "duration": 43,
+      "artwork": null
+    },
+    {
+      "src": "audio/18 Étude for Harp [Extract].mp3",
+      "title": "'Étude' for Harp [Extract]",
+      "album": "",
+      "artist": "Alistair Robertson",
+      "duration": 56,
+      "artwork": null
+    },
+    {
+      "src": "audio/19 'Elegie' for Solo Cello.mp3",
+      "title": "'Elegie' for Solo Cello",
+      "album": "Performed by Andrew Shulman",
+      "artist": "Alistair Robertson",
+      "duration": 243,
+      "artwork": null
+    },
+    {
+      "src": "audio/20 More [Extract].mp3",
+      "title": "More [Extract]",
+      "album": "'More' - Rescored",
+      "artist": "Alistair Robertson",
+      "duration": 68,
+      "artwork": null
+    },
+    {
+      "src": "audio/21 The Lost World - Main Theme.mp3",
+      "title": "The Lost World",
+      "album": "The Lost World",
+      "artist": "Alistair Robertson",
+      "duration": 49,
+      "artwork": null
+    },
+    {
+      "src": "audio/22 Billy Budd - Main Theme.mp3",
+      "title": "Billy Budd Theme",
+      "album": "Billy Budd",
+      "artist": "Alistair Robertson",
+      "duration": 58,
+      "artwork": null
+    },
+    {
+      "src": "audio/23 Half Life Surface Tension - Main Theme.mp3",
+      "title": "Surface Tension Theme",
+      "album": "Surface Tension",
+      "artist": "Alistair Robertson",
+      "duration": 59,
+      "artwork": null
+    },
+    {
+      "src": "audio/24 Brushtrokes in Time - Main Theme.mp3",
+      "title": "Brushstrokes in Time",
+      "album": "Brushstrokes in Time",
+      "artist": "Alistair Robertson",
+      "duration": 62,
+      "artwork": null
+    },
+    {
+      "src": "audio/25 Anne of Green Gables - Main Theme.mp3",
+      "title": "Anne of Green Gables Theme",
+      "album": "Anne of Green Gables",
+      "artist": "Alistair Robertson",
+      "duration": 26,
+      "artwork": null
+    },
+    {
+      "src": "audio/26 Northanger Abbey - Main Theme.mp3",
+      "title": "Northanger Abbey Theme",
+      "album": "Northanger Abbey",
+      "artist": "Alistair Robertson",
+      "duration": 57,
+      "artwork": null
+    },
+    {
+      "src": "audio/27 Little Women - Main Theme.mp3",
+      "title": "Main Theme",
+      "album": "Little Women",
+      "artist": "Alistair Robertson",
+      "duration": 33,
+      "artwork": null
+    },
+    {
+      "src": "audio/28 Jane Austen's Theme.mp3",
+      "title": "Jane Austen's Theme",
+      "album": "",
+      "artist": "Alistair Robertson",
+      "duration": 22,
+      "artwork": null
+    },
+    {
+      "src": "audio/29 Duet for Violin & Piano [Extracts Edits].mp3",
+      "title": "'Duet' for Violin & Piano [Extracts Edits]",
+      "album": "",
+      "artist": "Alistair Robertson",
+      "duration": 34,
+      "artwork": null
+    }
+  ]
+}

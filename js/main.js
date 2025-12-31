@@ -378,142 +378,94 @@
         const filename = src.split('/').pop();
         return filename
             .replace(/^\d+\s*/, '')           // Remove leading track number
-            .replace(/\.(mp3|wav)$/i, '');    // Remove extension
+            .replace(/\.(mp3|wav)$/i, '')     // Remove extension
+            .replace(/\s*\[.*?\]\s*/g, ' ')   // Remove bracket content
+            .trim();
     }
 
-    // Load ID3/metadata tags for all tracks
-    function loadAllTrackTags() {
-        // First, immediately set all titles from filenames (so nothing says "Loading...")
-        elements.tracks.forEach((track, index) => {
-            const src = track.dataset.src;
-            if (!src) return;
-            const titleEl = track.querySelector('.track-title');
-            if (titleEl && (titleEl.textContent === 'Loading...' || titleEl.textContent === '')) {
-                titleEl.textContent = getTitleFromFilename(src);
+    // Load track metadata from pre-generated manifest (fast, single request)
+    async function loadTrackManifest() {
+        try {
+            const response = await fetch('audio/tracks.json');
+            if (!response.ok) {
+                throw new Error(`Failed to load manifest: ${response.status}`);
             }
-            // Also update now playing if this is the first track
-            if (index === 0 && elements.nowPlayingTitle) {
-                elements.nowPlayingTitle.textContent = getTitleFromFilename(src);
-            }
-        });
-
-        // Then try to load actual metadata (will update if successful)
-        if (typeof jsmediatags === 'undefined') {
-            console.warn('jsmediatags not loaded, using filenames');
-            return;
-        }
-
-        console.log('jsmediatags loaded, reading tags...');
-
-        elements.tracks.forEach((track, index) => {
-            const src = track.dataset.src;
-            if (!src) return;
-
-            // Use fetch to get the file as a blob for better CORS handling
-            fetch(src)
-                .then(response => response.blob())
-                .then(blob => {
-                    jsmediatags.read(blob, {
-                        onSuccess: function(tag) {
-                            const tags = tag.tags;
-                            console.log('Tags for track', index, ':', tags.title, '-', tags.album);
-                            
-                            const titleEl = track.querySelector('.track-title');
-                            const albumEl = track.querySelector('.track-album');
-
-                            // Set title from metadata or keep filename
-                            if (titleEl && tags.title) {
-                                titleEl.textContent = tags.title;
-                            }
-
-                            // Set album if available
-                            if (albumEl && tags.album) {
-                                albumEl.textContent = tags.album;
-                            }
-
-                            // Extract album artwork if available
-                            let artworkDataUrl = null;
-                            if (tags.picture) {
-                                const picture = tags.picture;
-                                const base64String = btoa(
-                                    picture.data.reduce((data, byte) => data + String.fromCharCode(byte), '')
-                                );
-                                artworkDataUrl = `data:${picture.format};base64,${base64String}`;
-                                // Store artwork on the track element for later retrieval
-                                track.dataset.artwork = artworkDataUrl;
-                            }
-
-                            // Update now playing if this is the current track
-                            if (index === state.currentTrack) {
-                                if (elements.nowPlayingTitle && tags.title) {
-                                    elements.nowPlayingTitle.textContent = tags.title;
-                                }
-                                if (elements.nowPlayingAlbum && tags.album) {
-                                    elements.nowPlayingAlbum.textContent = tags.album;
-                                }
-                                // Only update artwork if user has already interacted (pressed play)
-                                if (state.hasInteracted) {
-                                    updateArtwork(artworkDataUrl);
-                                }
-                            }
-                        },
-                        onError: function(error) {
-                            console.log('Error reading tags for:', src, error.type, error.info);
-                        }
-                    });
-                })
-                .catch(err => {
-                    console.log('Fetch error for:', src, err);
-                });
-        });
-    }
-
-    // Preload metadata for all tracks to show durations immediately
-    function preloadAllTrackMetadata() {
-        elements.tracks.forEach((track, index) => {
-            const src = track.dataset.src;
-            if (!src) return;
-
-            // Create a temporary audio element just for metadata
-            const audio = new Audio();
-            audio.preload = 'metadata';
             
-            audio.addEventListener('loadedmetadata', () => {
-                const duration = formatTime(Math.floor(audio.duration));
-                const durationEl = track.querySelector('.track-duration');
-                if (durationEl) {
-                    durationEl.textContent = duration;
+            const manifest = await response.json();
+            console.log(`Loaded track manifest with ${manifest.trackCount} tracks`);
+            
+            // Map tracks by their src for quick lookup
+            const trackMap = new Map();
+            manifest.tracks.forEach(track => {
+                trackMap.set(track.src, track);
+            });
+            
+            // Update each track element with metadata from manifest
+            elements.tracks.forEach((trackEl, index) => {
+                const src = trackEl.dataset.src;
+                if (!src) return;
+                
+                const trackData = trackMap.get(src);
+                if (!trackData) {
+                    // Fallback to filename if not in manifest
+                    const titleEl = trackEl.querySelector('.track-title');
+                    if (titleEl) {
+                        titleEl.textContent = getTitleFromFilename(src);
+                    }
+                    return;
                 }
-                // Update total time if this is the current track
-                if (index === state.currentTrack && elements.totalTimeEl) {
-                    elements.totalTimeEl.textContent = duration;
+                
+                const titleEl = trackEl.querySelector('.track-title');
+                const albumEl = trackEl.querySelector('.track-album');
+                const durationEl = trackEl.querySelector('.track-duration');
+                
+                if (titleEl) {
+                    titleEl.textContent = trackData.title;
                 }
-                // Cache this audio element for later use
-                if (!state.audioCache.has(index)) {
-                    // Add event listeners for when this becomes the active track
-                    audio.addEventListener('ended', () => {
-                        playNext();
-                    });
-                    audio.addEventListener('timeupdate', () => {
-                        if (index === state.currentTrack) {
-                            updateProgressUI();
-                        }
-                    });
-                    state.audioCache.set(index, audio);
+                if (albumEl && trackData.album) {
+                    albumEl.textContent = trackData.album;
+                }
+                if (durationEl && trackData.duration) {
+                    durationEl.textContent = formatTime(trackData.duration);
+                }
+                
+                // Store artwork path for lazy loading
+                if (trackData.artwork) {
+                    trackEl.dataset.artwork = trackData.artwork;
+                }
+                
+                // Update now playing display for first track
+                if (index === 0) {
+                    if (elements.nowPlayingTitle) {
+                        elements.nowPlayingTitle.textContent = trackData.title;
+                    }
+                    if (elements.nowPlayingAlbum) {
+                        elements.nowPlayingAlbum.textContent = trackData.album || '';
+                    }
+                    if (elements.totalTimeEl && trackData.duration) {
+                        elements.totalTimeEl.textContent = formatTime(trackData.duration);
+                    }
                 }
             });
-
-            audio.addEventListener('error', (e) => {
-                console.log('Error loading metadata for track', index, src, e);
+            
+        } catch (err) {
+            console.warn('Failed to load track manifest, falling back to filenames:', err);
+            // Fallback: set titles from filenames
+            elements.tracks.forEach((track, index) => {
+                const src = track.dataset.src;
+                if (!src) return;
+                const titleEl = track.querySelector('.track-title');
+                if (titleEl && (titleEl.textContent === 'Loading...' || titleEl.textContent === '')) {
+                    titleEl.textContent = getTitleFromFilename(src);
+                }
+                if (index === 0 && elements.nowPlayingTitle) {
+                    elements.nowPlayingTitle.textContent = getTitleFromFilename(src);
+                }
             });
-
-            // Set src AFTER adding listeners, then trigger load
-            audio.src = src;
-            audio.load(); // Explicitly trigger loading
-        });
+        }
     }
 
-    // Get or create audio element for a track (lazy loading)
+    // Get or create audio element for a track (true lazy loading)
     function getAudio(index) {
         const track = elements.tracks[index];
         if (!track) return null;
@@ -526,9 +478,9 @@
             return state.audioCache.get(index);
         }
 
-        // Create new audio element (lazy load)
+        // Create new audio element with true lazy loading
         const audio = new Audio();
-        audio.preload = 'metadata'; // Only load metadata initially
+        audio.preload = 'none'; // Don't preload anything until user interacts
         audio.src = src;
         
         // Update duration when metadata loads
@@ -619,11 +571,13 @@
         }
     }
 
-    function updateArtwork(artworkDataUrl) {
+    function updateArtwork(artworkSrc) {
+        // artworkSrc can be a file path (e.g., "artwork/breath.webp") or null
+        
         // Update main player artwork
         if (elements.nowPlayingArtwork) {
-            if (artworkDataUrl) {
-                elements.nowPlayingArtwork.src = artworkDataUrl;
+            if (artworkSrc) {
+                elements.nowPlayingArtwork.src = artworkSrc;
                 elements.nowPlayingArtwork.classList.add('visible');
             } else {
                 elements.nowPlayingArtwork.src = '';
@@ -633,8 +587,8 @@
         
         // Update miniplayer artwork
         if (elements.miniplayerArtwork) {
-            if (artworkDataUrl) {
-                elements.miniplayerArtwork.src = artworkDataUrl;
+            if (artworkSrc) {
+                elements.miniplayerArtwork.src = artworkSrc;
                 elements.miniplayerArtwork.classList.add('visible');
             } else {
                 elements.miniplayerArtwork.src = '';
@@ -1253,8 +1207,7 @@
         initCreditsModal();
         initMusicPlayer();
         initTrackTextScrolling();     // Set up independent title/album scrolling
-        loadAllTrackTags();           // Load ID3 metadata (title, album)
-        preloadAllTrackMetadata();    // Load track durations immediately
+        loadTrackManifest();          // Load pre-generated metadata manifest (fast, single request)
         initScrollAnimations();
         initMiniplayer();
         initVideoCarousel();
